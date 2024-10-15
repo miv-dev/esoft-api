@@ -13,7 +13,7 @@ interface ProfileService {
         firstName: String,
         lastName: String,
         middleName: String,
-        feePercentage: Double?
+        dealShare: Double?
     ): RealtorEntity
 
     suspend fun createClient(

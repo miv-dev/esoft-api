@@ -9,5 +9,5 @@ object RealtorProfileTable : IntIdTable() {
     val firstName = varchar("first_name", 50)
     val lastName = varchar("last_name", 50)
     val middleName = varchar("middle_name", 100)
-    val feePercentage = double("fee_percentage").nullable()
+    val dealShare = double("deal_share").nullable()
 }

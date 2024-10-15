@@ -17,7 +17,7 @@ class ProfileServiceImpl @Inject constructor(
         firstName: String,
         lastName: String,
         middleName: String,
-        feePercentage: Double?
+        dealShare: Double?
     ): RealtorEntity = newSuspendedTransaction {
 
         val user = userService.create(Role.REALTOR)
@@ -27,7 +27,7 @@ class ProfileServiceImpl @Inject constructor(
             this.firstName = firstName
             this.lastName = lastName
             this.middleName = middleName
-            this.feePercentage = feePercentage
+            this.dealShare = dealShare
         }
     }
 

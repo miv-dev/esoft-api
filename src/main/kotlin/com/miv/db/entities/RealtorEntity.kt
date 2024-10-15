@@ -15,7 +15,7 @@ class RealtorEntity(id: EntityID<Int>) : IntEntity(id) {
     var lastName by RealtorProfileTable.lastName
     var middleName by RealtorProfileTable.middleName
     var user by UserEntity referencedOn RealtorProfileTable.user
-    var feePercentage by RealtorProfileTable.feePercentage
+    var dealShare by RealtorProfileTable.dealShare
 
     fun toModel() = RealtorProfile(
         id.value,
@@ -23,7 +23,7 @@ class RealtorEntity(id: EntityID<Int>) : IntEntity(id) {
         firstName = firstName,
         lastName = lastName,
         middleName = middleName,
-        feePercentage = feePercentage,
+        dealShare = dealShare,
     )
 
 }

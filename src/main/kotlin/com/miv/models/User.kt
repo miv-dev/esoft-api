@@ -33,7 +33,7 @@ data class RealtorProfile(
     val firstName: String,
     val lastName: String,
     val middleName: String,
-    val feePercentage: Double?
+    val dealShare: Double?
 ) : Profile()
 
 
