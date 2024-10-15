@@ -8,6 +8,9 @@ hikari-version = "5.0.1"
 rbac-version = "0.2.0"
 
 
+dagger = "2.51"
+ksp = "2.0.21-1.0.25"
+
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor-version" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor-version" }
@@ -28,7 +31,14 @@ ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages-jvm", ve
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions-jvm", version.ref = "ktor-version" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth-jvm", version.ref = "ktor-version" }
 ktor-server-auth-rbac = { module = "com.github.omkar-tenkale:ktor-role-based-auth", version.ref = "rbac-version" }
+
+
+dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
+dagger-core = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
+
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
-ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
+ktor-server = { id = "io.ktor.plugin", version.ref = "ktor-version" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+ksp = { id = "com.google.devtools.ksp" , version.ref = "ksp"}

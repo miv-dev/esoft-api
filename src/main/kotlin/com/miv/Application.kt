@@ -1,5 +1,6 @@
 package com.miv
 
+import com.miv.di.DaggerApplicationComponent
 import com.miv.plugins.*
 import io.ktor.server.application.*
 
@@ -8,5 +9,8 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-    configureRouting()
+
+    val routing = DaggerApplicationComponent.create().routingFactory()
+
+    routing.create(this)
 }

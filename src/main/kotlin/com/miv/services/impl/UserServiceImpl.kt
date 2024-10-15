@@ -5,8 +5,9 @@ import com.miv.models.Role
 import com.miv.services.UserService
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
+import javax.inject.Inject
 
-class UserServiceImpl : UserService {
+class UserServiceImpl @Inject constructor() : UserService {
     override suspend fun create(role: Role): UserEntity = newSuspendedTransaction {
         UserEntity.new {
             this.role = role

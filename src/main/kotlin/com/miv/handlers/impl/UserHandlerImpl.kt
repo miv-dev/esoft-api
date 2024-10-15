@@ -4,8 +4,9 @@ import com.miv.handlers.UserHandler
 import com.miv.models.Profile
 import com.miv.models.Role
 import com.miv.services.ProfileService
+import javax.inject.Inject
 
-class UserHandlerImpl(
+class UserHandlerImpl @Inject constructor(
     private val service: ProfileService
 ) : UserHandler {
     override suspend fun search(

@@ -1,8 +1,9 @@
 
 plugins {
-    kotlin("jvm") version "2.0.21"
-    id("io.ktor.plugin") version "3.0.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktor.server)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.ksp)
 }
 
 group = "com.miv"
@@ -26,7 +27,8 @@ dependencies {
     implementation(libs.exposed.java.time)
     implementation(libs.hikari.cp)
 
-
+    implementation(libs.dagger.core)
+    ksp(libs.dagger.compiler)
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)

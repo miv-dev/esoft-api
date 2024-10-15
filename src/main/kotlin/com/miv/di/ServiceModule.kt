@@ -1,0 +1,19 @@
+package com.miv.di
+
+import com.miv.services.ProfileService
+import com.miv.services.UserService
+import com.miv.services.impl.ProfileServiceImpl
+import com.miv.services.impl.UserServiceImpl
+import dagger.Binds
+import dagger.Module
+import di.ApplicationScope
+
+
+@Module
+interface ServiceModule {
+    @[ApplicationScope Binds]
+    fun bindsUserService(impl: UserServiceImpl): UserService
+
+    @[ApplicationScope Binds]
+    fun bindsProfileService(impl: ProfileServiceImpl): ProfileService
+}

@@ -7,9 +7,10 @@ import com.miv.services.ProfileService
 import com.miv.services.UserService
 import io.ktor.server.plugins.BadRequestException
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import javax.inject.Inject
 import kotlin.math.min
 
-class ProfileServiceImpl(
+class ProfileServiceImpl @Inject constructor(
     private val userService: UserService,
 ) : ProfileService {
     override suspend fun createRealtor(
