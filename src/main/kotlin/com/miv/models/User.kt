@@ -21,8 +21,8 @@ data class ClientProfile(
     val firstName: String?,
     val lastName: String?,
     val middleName: String?,
-    val phone: String,
-    val email: String,
+    val phone: String?,
+    val email: String?,
 ) : Profile()
 
 
