@@ -1,6 +1,7 @@
 package com.miv.models
 
 import com.miv.utils.UUIDSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 
@@ -18,6 +19,7 @@ sealed class Profile {
 }
 
 @Serializable
+@SerialName("Client")
 data class ClientProfile(
     override val id: Int,
     override val user: User,
@@ -30,6 +32,7 @@ data class ClientProfile(
 
 
 @Serializable
+@SerialName("Realtor")
 data class RealtorProfile(
     override val id: Int,
     override val user: User,
