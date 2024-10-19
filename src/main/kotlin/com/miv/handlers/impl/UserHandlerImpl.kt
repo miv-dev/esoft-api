@@ -4,6 +4,7 @@ import com.miv.handlers.UserHandler
 import com.miv.models.Profile
 import com.miv.models.Role
 import com.miv.services.ProfileService
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import javax.inject.Inject
 
 class UserHandlerImpl @Inject constructor(
@@ -12,8 +13,8 @@ class UserHandlerImpl @Inject constructor(
     override suspend fun search(
         query: String?,
         role: Role
-    ): List<Profile> {
-        return when (role) {
+    ): List<Profile> = newSuspendedTransaction {
+         when (role) {
             Role.CLIENT -> {
                 service.searchClients(query).map { it.toModel() }
             }

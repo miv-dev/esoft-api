@@ -12,12 +12,15 @@ data class User(
 )
 
 @Serializable
-open class Profile()
+sealed class Profile {
+    abstract val id: Int
+    abstract val user: User
+}
 
 @Serializable
 data class ClientProfile(
-    val id: Int,
-    val user: User,
+    override val id: Int,
+    override val user: User,
     val firstName: String?,
     val lastName: String?,
     val middleName: String?,
@@ -28,8 +31,8 @@ data class ClientProfile(
 
 @Serializable
 data class RealtorProfile(
-    val id: Int,
-    val user: User,
+    override val id: Int,
+    override val user: User,
     val firstName: String,
     val lastName: String,
     val middleName: String,
@@ -38,5 +41,5 @@ data class RealtorProfile(
 
 
 enum class Role {
-    ADMIN, CLIENT, REALTOR
+    CLIENT, REALTOR, ADMIN
 }

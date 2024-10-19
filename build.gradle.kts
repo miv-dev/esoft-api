@@ -26,12 +26,17 @@ dependencies {
     implementation(libs.exposed.dao)
     implementation(libs.exposed.java.time)
     implementation(libs.hikari.cp)
+    implementation(libs.db.flyway)
+    implementation(libs.db.postgres)
+    implementation(libs.csv.reader)
 
     implementation(libs.dagger.core)
     ksp(libs.dagger.compiler)
 
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.logback.classic)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)

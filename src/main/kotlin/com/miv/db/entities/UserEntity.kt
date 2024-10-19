@@ -13,7 +13,7 @@ import java.util.UUID
 class UserEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<UserEntity>(UserTable)
 
-    var role by enumeration("role", Role::class)
+    var role by UserTable.role
 
 
     fun toModel() = User(

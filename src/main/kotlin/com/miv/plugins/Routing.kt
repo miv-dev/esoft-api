@@ -14,7 +14,7 @@ class AppRouting @AssistedInject constructor(
 ) {
     fun configureRouting() {
         application.routing {
-            userRoutingFactory.create(this)
+            userRoutingFactory.create(this).invoke()
         }
     }
 
