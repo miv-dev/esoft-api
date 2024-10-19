@@ -6,8 +6,7 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS realtors
 (
-    id          serial primary key,
-    user_id     uuid references users on delete cascade unique,
+    user_id     uuid references users on delete cascade primary key,
     last_name   varchar(50) not null,
     first_name  varchar(50) not null,
     middle_name varchar(50) not null,
@@ -16,11 +15,10 @@ CREATE TABLE IF NOT EXISTS realtors
 
 CREATE TABLE IF NOT EXISTS clients
 (
-    id          serial primary key,
-    user_id     uuid references users on delete cascade unique,
+    user_id     uuid references users on delete cascade primary key,
     last_name   varchar(50),
     first_name  varchar(50),
     middle_name varchar(50),
-    phone       varchar(50) unique ,
+    phone       varchar(50) unique,
     email       varchar(50) unique
 );

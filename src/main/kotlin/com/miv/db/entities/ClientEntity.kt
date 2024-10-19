@@ -2,12 +2,13 @@ package com.miv.db.entities
 
 import com.miv.db.tables.ClientProfileTable
 import com.miv.models.ClientProfile
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.dao.id.CompositeID
 import org.jetbrains.exposed.dao.id.EntityID
+import java.util.UUID
 
-class ClientEntity(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<ClientEntity>(ClientProfileTable)
+class ClientEntity(id: EntityID<CompositeID>) : CompositeEntity(id) {
+    companion object : CompositeEntityClass<ClientEntity>(ClientProfileTable)
 
     var firstName by ClientProfileTable.firstName
     var lastName by ClientProfileTable.lastName
@@ -17,7 +18,6 @@ class ClientEntity(id: EntityID<Int>) : IntEntity(id) {
     var email by ClientProfileTable.email
 
     fun toModel() = ClientProfile(
-        id.value,
         user = user.toModel(),
         firstName = firstName,
         lastName = lastName,

@@ -3,6 +3,7 @@ package com.miv.services.impl
 import com.miv.db.entities.ClientEntity
 import com.miv.db.entities.RealtorEntity
 import com.miv.db.tables.ClientProfileTable
+import com.miv.db.tables.RealtorProfileTable
 import com.miv.models.Role
 import com.miv.services.ImportService
 import com.miv.services.ProfileService
@@ -13,6 +14,7 @@ import io.ktor.server.plugins.BadRequestException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.jetbrains.exposed.dao.id.CompositeID
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.andWhere
@@ -123,8 +125,10 @@ class ProfileServiceImpl @Inject constructor(
 
         val user = userService.create(Role.REALTOR)
 
-        RealtorEntity.new {
-            this.user = user
+        val id = CompositeID {
+            it[RealtorProfileTable.user] = user.id.value
+        }
+        RealtorEntity.new(id) {
             this.firstName = firstName
             this.lastName = lastName
             this.middleName = middleName
@@ -156,8 +160,10 @@ class ProfileServiceImpl @Inject constructor(
         if (checkClientExists(phone, email)) throw BadRequestException("User is  exist")
 
         val user = userService.create(Role.CLIENT)
-        ClientEntity.new {
-            this.user = user
+        val id = CompositeID {
+            it[ClientProfileTable.user] = user.id.value
+        }
+        ClientEntity.new(id) {
             this.firstName = firstName
             this.lastName = lastName
             this.middleName = middleName

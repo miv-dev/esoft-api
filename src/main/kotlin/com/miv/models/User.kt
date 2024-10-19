@@ -14,14 +14,12 @@ data class User(
 
 @Serializable
 sealed class Profile {
-    abstract val id: Int
     abstract val user: User
 }
 
 @Serializable
 @SerialName("Client")
 data class ClientProfile(
-    override val id: Int,
     override val user: User,
     val firstName: String?,
     val lastName: String?,
@@ -34,7 +32,6 @@ data class ClientProfile(
 @Serializable
 @SerialName("Realtor")
 data class RealtorProfile(
-    override val id: Int,
     override val user: User,
     val firstName: String,
     val lastName: String,
