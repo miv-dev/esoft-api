@@ -3,7 +3,7 @@ package com.miv.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RealtorPost(
+data class RealtorDTO(
     val firstName: String,
     val lastName: String,
     val middleName: String,

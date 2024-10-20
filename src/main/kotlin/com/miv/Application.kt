@@ -21,7 +21,7 @@ fun Application.module() {
             ignoreUnknownKeys = true
         })
     }
-
+    cors()
     val app = DaggerApplicationComponent.create()
 
 

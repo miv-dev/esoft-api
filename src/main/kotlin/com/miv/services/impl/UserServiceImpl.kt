@@ -14,7 +14,7 @@ class UserServiceImpl @Inject constructor() : UserService {
         }
     }
 
-    override suspend fun delete(id: UUID) {
+    override suspend fun delete(id: UUID) = newSuspendedTransaction {
         UserEntity[id].delete()
     }
 }

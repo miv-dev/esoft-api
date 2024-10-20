@@ -1,17 +1,17 @@
 package com.miv.routes
 
-import com.miv.dto.ClientPost
-import com.miv.dto.RealtorPost
+import com.miv.dto.ClientDTO
+import com.miv.dto.RealtorDTO
 import com.miv.handlers.UserHandler
 import com.miv.models.Role
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import io.ktor.server.util.getOrFail
-import java.util.*
 
 class UserRouting @AssistedInject constructor(
     private val handler: UserHandler,
@@ -28,17 +28,43 @@ class UserRouting @AssistedInject constructor(
                 call.respond(profiles)
             }
 
-            post("/realtor"){
-                val data = call.receive<RealtorPost>()
-                handler.createRealtor(data).also {
-                    call.respond(it)
+            route("/realtor") {
+                post {
+                    val data = call.receive<RealtorDTO>()
+                    handler.createRealtor(data).also {
+                        call.respond(it)
+                    }
+                }
+                put("/{id}") {
+                    val id = call.parameters.getOrFail<String>("id")
+                    val data = call.receive<RealtorDTO>()
+                    handler.updateRealtor(data, id).also {
+                        call.respond(it)
+                    }
+
                 }
             }
 
-            post("/client") {
-                val data = call.receive<ClientPost>()
-                handler.createClient(data).also {
-                    call.respond(it)
+            route("/client") {
+                post {
+                    val data = call.receive<ClientDTO>()
+                    handler.createClient(data).also {
+                        call.respond(it)
+                    }
+                }
+                put("/{id}") {
+                    val id = call.parameters.getOrFail<String>("id")
+                    val data = call.receive<ClientDTO>()
+                    handler.updateClient(data, id).also {
+                        call.respond(it)
+                    }
+                }
+            }
+
+            delete("/{id}") {
+                val id = call.parameters.getOrFail<String>("id")
+                handler.deleteUser(id).also {
+                    call.respond(HttpStatusCode.OK)
                 }
             }
         }

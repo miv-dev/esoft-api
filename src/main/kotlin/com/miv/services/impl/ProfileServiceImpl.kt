@@ -21,6 +21,7 @@ import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -149,6 +150,21 @@ class ProfileServiceImpl @Inject constructor(
         ClientEntity.wrapRows(query).count() > 0
     }
 
+    private suspend fun checkClientExists(uuid: UUID, phone: String?, email: String?): Boolean =
+        newSuspendedTransaction {
+            val query = ClientProfileTable.selectAll()
+                .where { ClientProfileTable.user neq uuid }
+
+            phone?.takeIf { it.isNotEmpty() }?.let {
+                query.andWhere { ClientProfileTable.phone eq phone }
+            }
+            email?.takeIf { it.isNotEmpty() }?.let {
+                query.andWhere { ClientProfileTable.email eq email }
+            }
+
+            ClientEntity.wrapRows(query).count() > 0
+        }
+
     override suspend fun createClient(
         firstName: String?,
         lastName: String?,
@@ -174,6 +190,54 @@ class ProfileServiceImpl @Inject constructor(
                 this.email = email
             }
         }
+    }
+
+    override suspend fun updateProfile(
+        uuid: UUID,
+        firstName: String?,
+        lastName: String?,
+        middleName: String?,
+        phone: String?,
+        email: String?
+    ): ClientEntity = newSuspendedTransaction {
+        if (checkClientExists(uuid, phone, email)) throw BadRequestException("Another user is exist")
+
+        val id = CompositeID {
+            it[ClientProfileTable.user] = uuid
+        }
+        ClientEntity.findByIdAndUpdate(id) {
+            it.firstName = firstName
+            it.lastName = lastName
+            it.middleName = middleName
+            if (!phone.isNullOrEmpty()) {
+                it.phone = phone
+            } else {
+                it.phone = null
+            }
+            if (!email.isNullOrEmpty()) {
+                it.email = email
+            } else {
+                it.email = null
+            }
+        } ?: throw BadRequestException("User isn't exist")
+    }
+
+    override suspend fun updateProfile(
+        uuid: UUID,
+        firstName: String,
+        lastName: String,
+        middleName: String,
+        dealShare: Double?
+    ): RealtorEntity = newSuspendedTransaction {
+        val id = CompositeID {
+            it[RealtorProfileTable.user] = uuid
+        }
+        RealtorEntity.findByIdAndUpdate(id) {
+            it.firstName = firstName
+            it.lastName = lastName
+            it.middleName = middleName
+            it.dealShare = dealShare
+        } ?: throw BadRequestException("User isn't exist")
     }
 
 

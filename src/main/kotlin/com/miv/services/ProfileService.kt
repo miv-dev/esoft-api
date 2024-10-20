@@ -6,6 +6,7 @@ import com.miv.models.Profile
 import com.miv.models.Role
 import com.miv.models.User
 import jdk.jfr.Percentage
+import java.util.UUID
 
 interface ProfileService {
 
@@ -23,6 +24,24 @@ interface ProfileService {
         phone: String?,
         email: String?,
     ): ClientEntity
+
+    suspend fun updateProfile(
+        uuid: UUID,
+        firstName: String?,
+        lastName: String?,
+        middleName: String?,
+        phone: String?,
+        email: String?,
+    ): ClientEntity
+
+    suspend fun updateProfile(
+        uuid: UUID,
+        firstName: String,
+        lastName: String,
+        middleName: String,
+        dealShare: Double?
+    ): RealtorEntity
+
 
     suspend fun searchClients(query: String?): List<ClientEntity>
 
