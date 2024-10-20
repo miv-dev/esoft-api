@@ -21,7 +21,7 @@ class UserRouting @AssistedInject constructor(
     operator fun invoke() {
         route("/users") {
             get("/search") {
-                val query = call.request.queryParameters.getOrFail("query")
+                val query = call.request.queryParameters["query"]
                 val role = call.request.queryParameters.getOrFail<Role>("role")
 
                 val profiles = handler.search(query, role)
