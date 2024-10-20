@@ -4,6 +4,7 @@ import com.miv.db.entities.ClientEntity
 import com.miv.db.entities.RealtorEntity
 import com.miv.db.tables.ClientProfileTable
 import com.miv.db.tables.RealtorProfileTable
+import com.miv.models.Profile
 import com.miv.models.Role
 import com.miv.services.ImportService
 import com.miv.services.ProfileService
@@ -73,6 +74,30 @@ class ProfileServiceImpl @Inject constructor(
             this.javaClass.classLoader?.getResourceAsStream(path) ?: throw RuntimeException("File not found")
         val reader = CsvReaders.forType<T>()
         return reader.read(inputStream).map { it.getResultOrThrow() }.toList()
+    }
+
+    override suspend fun getProfileByUserID(id: UUID): Profile = newSuspendedTransaction {
+        val user = userService.getByID(id)
+
+
+        when (user.role) {
+            Role.CLIENT -> {
+                val compositeID = CompositeID {
+                    it[ClientProfileTable.user] = user.id
+                }
+                ClientEntity[compositeID].toModel()
+            }
+
+            Role.REALTOR -> {
+                val compositeID = CompositeID {
+                    it[RealtorProfileTable.user] = user.id
+                }
+                RealtorEntity[compositeID].toModel()
+            }
+
+            Role.ADMIN -> throw BadRequestException("Admin user does not have a profile")
+        }
+
     }
 
     private suspend fun importUsers() {

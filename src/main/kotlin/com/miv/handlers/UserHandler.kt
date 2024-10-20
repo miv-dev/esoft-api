@@ -20,4 +20,6 @@ interface UserHandler {
     suspend fun updateClient(data: ClientDTO, uuid: String): ClientProfile
 
     suspend fun deleteUser(uuid: String)
+
+    suspend fun getUserByID(id: String): Profile
 }

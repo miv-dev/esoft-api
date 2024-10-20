@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.miv"
-version = "1.1.0"
+version = "1.2.1"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")

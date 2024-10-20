@@ -14,6 +14,10 @@ class UserServiceImpl @Inject constructor() : UserService {
         }
     }
 
+    override suspend fun getByID(id: UUID): UserEntity = newSuspendedTransaction{
+        UserEntity[id]
+    }
+
     override suspend fun delete(id: UUID) = newSuspendedTransaction {
         UserEntity[id].delete()
     }

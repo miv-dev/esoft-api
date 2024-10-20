@@ -47,4 +47,5 @@ interface ProfileService {
 
     suspend fun searchRealtors(query: String?): List<RealtorEntity>
 
+    suspend fun getProfileByUserID(id: UUID): Profile
 }

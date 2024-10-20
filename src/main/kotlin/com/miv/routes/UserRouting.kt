@@ -28,6 +28,12 @@ class UserRouting @AssistedInject constructor(
                 call.respond(profiles)
             }
 
+            get("/{id}") {
+                val id = call.parameters.getOrFail<String>("id")
+                handler.getUserByID(id).also {
+                    call.respond(it)
+                }
+            }
             route("/realtor") {
                 post {
                     val data = call.receive<RealtorDTO>()

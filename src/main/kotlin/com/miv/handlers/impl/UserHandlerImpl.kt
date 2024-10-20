@@ -57,6 +57,11 @@ class UserHandlerImpl @Inject constructor(
         userService.delete(UUID.fromString(uuid))
     }
 
+    override suspend fun getUserByID(id: String): Profile {
+        val uuid  = UUID.fromString(id)
+        return profileService.getProfileByUserID(uuid)
+    }
+
     override suspend fun updateRealtor(data: RealtorDTO, uuid: String): RealtorProfile = newSuspendedTransaction{
         val id = UUID.fromString(uuid)
         profileService.updateProfile(
