@@ -2,7 +2,7 @@ services:
   ktor:
     build: .
     container_name: ktor
-    image: mivdev/esoft:1.2.1
+    image: mivdev/esoft:1.2.2
     user: root
     volumes:
       - ktor-media:/data/files
@@ -14,6 +14,7 @@ services:
         condition: service_healthy
     environment:
       - DB_USERNAME=ktor
+      - PORT=8080
       - DB_PASSWORD=GqNvKyF8
       - DB_URL=jdbc:postgresql://db:5432/program_cloud_db
     

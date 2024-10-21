@@ -42,10 +42,5 @@ interface ProfileService {
         dealShare: Double?
     ): RealtorEntity
 
-
-    suspend fun searchClients(query: String?): List<ClientEntity>
-
-    suspend fun searchRealtors(query: String?): List<RealtorEntity>
-
     suspend fun getProfileByUserID(id: UUID): Profile
 }

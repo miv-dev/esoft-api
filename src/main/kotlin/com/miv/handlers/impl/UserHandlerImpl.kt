@@ -8,6 +8,7 @@ import com.miv.models.Profile
 import com.miv.models.RealtorProfile
 import com.miv.models.Role
 import com.miv.services.ProfileService
+import com.miv.services.SearchService
 import com.miv.services.UserService
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
@@ -15,24 +16,13 @@ import javax.inject.Inject
 
 class UserHandlerImpl @Inject constructor(
     private val userService: UserService,
+    private val searchService: SearchService,
     private val profileService: ProfileService
 ) : UserHandler {
     override suspend fun search(
         query: String?,
         role: Role
-    ): List<Profile> = newSuspendedTransaction {
-        when (role) {
-            Role.CLIENT -> {
-                profileService.searchClients(query).map { it.toModel() }
-            }
-
-            Role.REALTOR -> {
-                profileService.searchRealtors(query).map { it.toModel() }
-            }
-
-            else -> emptyList()
-        }
-    }
+    ): List<Profile> = searchService.searchUsers(query, role)
 
     override suspend fun createClient(data: ClientDTO): ClientProfile = newSuspendedTransaction {
         profileService.createClient(
@@ -58,11 +48,11 @@ class UserHandlerImpl @Inject constructor(
     }
 
     override suspend fun getUserByID(id: String): Profile {
-        val uuid  = UUID.fromString(id)
+        val uuid = UUID.fromString(id)
         return profileService.getProfileByUserID(uuid)
     }
 
-    override suspend fun updateRealtor(data: RealtorDTO, uuid: String): RealtorProfile = newSuspendedTransaction{
+    override suspend fun updateRealtor(data: RealtorDTO, uuid: String): RealtorProfile = newSuspendedTransaction {
         val id = UUID.fromString(uuid)
         profileService.updateProfile(
             id,
