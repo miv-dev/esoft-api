@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 
 object ApartmentTable : CompositeIdTable("apartments") {
     val realState = reference("real_state", RealStateTable, ReferenceOption.CASCADE)
-    val totalArea = double("total_areas").nullable()
+    val totalArea = double("total_area").nullable()
     val rooms = integer("rooms").nullable()
     val floor = integer("floor").nullable()
 
