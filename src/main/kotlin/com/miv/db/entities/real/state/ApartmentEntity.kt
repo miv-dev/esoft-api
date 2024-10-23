@@ -1,6 +1,7 @@
 package com.miv.db.entities.real.state
 
 import com.miv.db.tables.real.state.ApartmentTable
+import com.miv.models.real.state.Apartment
 import org.jetbrains.exposed.dao.CompositeEntity
 import org.jetbrains.exposed.dao.CompositeEntityClass
 import org.jetbrains.exposed.dao.id.CompositeID
@@ -13,4 +14,11 @@ class ApartmentEntity(id: EntityID<CompositeID>) : CompositeEntity(id) {
     val totalArea by ApartmentTable.totalArea
     val rooms by ApartmentTable.rooms
     val floor by ApartmentTable.floor
+
+    fun toModel() = Apartment(
+        realState = realState.toModel(),
+        totalArea = totalArea,
+        rooms = rooms,
+        floor = floor
+    )
 }

@@ -8,16 +8,7 @@ import java.util.*
 
 @Serializable
 data class House(
-    @Serializable(with = UUIDSerializer::class)
-    override val id: UUID,
-    override val type: RealStateType,
-    override val latitude: Double,
-    override val longitude: Double,
-    override val addressCity: String?,
-    override val addressStreet: String?,
-    override val addressHouse: String?,
-    override val addressNumber: String?,
-    override val districts: List<District>,
+    override val realState: RealState,
     val totalArea: Double?,
-    val totalFloors: Double?,
-) : RealState()
+    val totalFloors: Int?
+) : RealStateClass()

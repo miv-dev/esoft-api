@@ -1,6 +1,7 @@
 package com.miv.db.entities.real.state
 
 import com.miv.db.tables.real.state.LandTable
+import com.miv.models.real.state.Land
 import org.jetbrains.exposed.dao.CompositeEntity
 import org.jetbrains.exposed.dao.CompositeEntityClass
 import org.jetbrains.exposed.dao.id.CompositeID
@@ -11,4 +12,9 @@ class LandEntity(id: EntityID<CompositeID>) : CompositeEntity(id) {
 
     val realState by RealStateEntity referencedOn LandTable.realState
     val totalArea by LandTable.totalArea
+
+    fun toModel() = Land(
+        realState = realState.toModel(),
+        totalArea = totalArea,
+    )
 }

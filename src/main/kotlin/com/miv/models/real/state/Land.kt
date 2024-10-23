@@ -8,15 +8,6 @@ import java.util.*
 
 @Serializable
 data class Land(
-    @Serializable(with = UUIDSerializer::class)
-    override val id: UUID,
-    override val type: RealStateType,
-    override val latitude: Double,
-    override val longitude: Double,
-    override val addressCity: String?,
-    override val addressStreet: String?,
-    override val addressHouse: String?,
-    override val addressNumber: String?,
-    override val districts: List<District>,
+    override val realState: RealState,
     val totalArea: Double?
-) : RealState()
+) : RealStateClass()
