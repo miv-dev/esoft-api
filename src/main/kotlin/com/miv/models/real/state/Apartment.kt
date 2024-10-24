@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class Apartment(
     override val realState: RealState,
     val totalArea: Double?,
-    val rooms: Int?,
+    val totalRooms: Int?,
     val floor: Int?,
 ) : RealStateClass()

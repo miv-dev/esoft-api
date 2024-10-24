@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS real_states
 (
     id             uuid primary key,
     type           integer default 0 not null,
-    latitude       float not null,
-    longitude      float not null,
+    latitude       float             not null,
+    longitude      float             not null,
     address_city   varchar(100),
     address_street varchar(100),
     address_house  varchar(100),
@@ -34,15 +34,16 @@ CREATE TABLE IF NOT EXISTS lands
 
 CREATE TABLE IF NOT EXISTS apartments
 (
-    real_state uuid references real_states on delete cascade primary key,
-    total_area float,
-    rooms      integer,
-    floor      integer
+    real_state  uuid references real_states on delete cascade primary key,
+    total_area  float,
+    total_rooms integer,
+    floor       integer
 );
 
 CREATE TABLE IF NOT EXISTS houses
 (
     real_state   uuid references real_states on delete cascade primary key,
     total_area   float,
+    total_rooms  integer,
     total_floors integer
 );

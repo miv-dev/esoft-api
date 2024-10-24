@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 
 object LandTable : CompositeIdTable("lands") {
     val realState = reference("real_state", RealStateTable, ReferenceOption.CASCADE)
-    val totalArea = double("total_areas").nullable()
+    val totalArea = double("total_area").nullable()
 
     init {
         addIdColumn(realState)

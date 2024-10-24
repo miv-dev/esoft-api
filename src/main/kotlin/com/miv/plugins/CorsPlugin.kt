@@ -10,12 +10,12 @@ fun Application.cors() {
         allowMethod(HttpMethod.Post)
         allowMethod(HttpMethod.Get)
         allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Accept)
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.Connection)
         allowHeader(HttpHeaders.AccessControlAllowOrigin)
         allowHeader(HttpHeaders.UserAgent)
-        allowHeader("X-GitHub-Api-Version")
     }
 }

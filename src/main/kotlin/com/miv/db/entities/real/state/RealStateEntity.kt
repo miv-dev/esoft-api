@@ -12,14 +12,14 @@ import java.util.*
 class RealStateEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<RealStateEntity>(RealStateTable)
 
-    val type by RealStateTable.type
-    val latitude by RealStateTable.latitude
-    val longitude by RealStateTable.longitude
-    val addressCity by RealStateTable.addressCity
-    val addressHouse by RealStateTable.addressHouse
-    val addressStreet by RealStateTable.addressStreet
-    val addressNumber by RealStateTable.addressNumber
-    val districts by DistrictEntity via RealStateDistrictTable
+    var type by RealStateTable.type
+    var latitude by RealStateTable.latitude
+    var longitude by RealStateTable.longitude
+    var addressCity by RealStateTable.addressCity
+    var addressHouse by RealStateTable.addressHouse
+    var addressStreet by RealStateTable.addressStreet
+    var addressNumber by RealStateTable.addressNumber
+    var districts by DistrictEntity via RealStateDistrictTable
 
     fun toModel() = RealState(
         id = id.value,
@@ -27,8 +27,8 @@ class RealStateEntity(id: EntityID<UUID>) : UUIDEntity(id) {
         latitude = latitude,
         longitude = longitude,
         addressCity = addressCity,
-        addressStreet = addressHouse,
-        addressHouse = addressStreet,
+        addressStreet = addressStreet,
+        addressHouse = addressHouse,
         addressNumber = addressNumber,
         districts = districts.map { it.toModel() }
     )

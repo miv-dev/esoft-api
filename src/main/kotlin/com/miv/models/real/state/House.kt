@@ -10,5 +10,6 @@ import java.util.*
 data class House(
     override val realState: RealState,
     val totalArea: Double?,
+    val totalRooms: Int?,
     val totalFloors: Int?
 ) : RealStateClass()
