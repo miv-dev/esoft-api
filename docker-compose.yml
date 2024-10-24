@@ -2,7 +2,7 @@ services:
   ktor:
     build: .
     container_name: ktor
-    image: mivdev/esoft:1.2.2
+    image: mivdev/esoft:2.0.0
     user: root
     volumes:
       - ktor-media:/data/files

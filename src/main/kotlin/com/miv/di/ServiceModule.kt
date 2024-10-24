@@ -1,13 +1,7 @@
 package com.miv.di
 
-import com.miv.services.ImportService
-import com.miv.services.ProfileService
-import com.miv.services.SearchService
-import com.miv.services.UserService
-import com.miv.services.impl.ImportServiceImpl
-import com.miv.services.impl.ProfileServiceImpl
-import com.miv.services.impl.SearchServiceImpl
-import com.miv.services.impl.UserServiceImpl
+import com.miv.services.*
+import com.miv.services.impl.*
 import dagger.Binds
 import dagger.Module
 import di.ApplicationScope
@@ -26,4 +20,10 @@ interface ServiceModule {
 
     @[ApplicationScope Binds]
     fun bindsSearchService(impl: SearchServiceImpl): SearchService
+
+    @[ApplicationScope Binds]
+    fun bindsDistrictService(impl: DistrictServiceImpl): DistrictService
+
+    @[ApplicationScope Binds]
+    fun bindsRealStateService(impl: RealStateServiceImpl): RealStateService
 }
