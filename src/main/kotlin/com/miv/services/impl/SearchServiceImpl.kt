@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import javax.inject.Inject
 import kotlin.math.min
 
-class SearchServiceImpl @Inject constructor(): SearchService {
+class SearchServiceImpl @Inject constructor() : SearchService {
     override suspend fun searchUsers(query: String?, role: Role): List<Profile> = newSuspendedTransaction {
         when (role) {
             Role.ADMIN -> emptyList()
@@ -36,7 +36,7 @@ class SearchServiceImpl @Inject constructor(): SearchService {
         }
     }
 
-    private suspend fun <E : CompositeEntity, T : CompositeEntityClass<E>> T.filter(
+    private suspend fun <E : UUIDEntity, T : UUIDEntityClass<E>> T.filter(
         query: String?,
         distance: Int,
         vararg fields: Column<out String?>
@@ -53,7 +53,6 @@ class SearchServiceImpl @Inject constructor(): SearchService {
             }
         }
     }
-
 
 
     companion object {

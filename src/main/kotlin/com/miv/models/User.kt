@@ -40,6 +40,12 @@ data class RealtorProfile(
 ) : Profile()
 
 
+@Serializable
+@SerialName("Administrator")
+data class AdministratorProfile(
+    override val user: User
+) : Profile()
+
 enum class Role {
     CLIENT, REALTOR, ADMIN
 }

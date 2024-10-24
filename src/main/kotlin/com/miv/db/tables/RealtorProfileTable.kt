@@ -1,21 +1,16 @@
 package com.miv.db.tables
 
-import org.jetbrains.exposed.dao.id.CompositeIdTable
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.dao.id.*
+import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
+import java.util.UUID
 
-object RealtorProfileTable : CompositeIdTable("realtors") {
-    val user = reference("user_id", UserTable, ReferenceOption.CASCADE)
+object RealtorProfileTable : IdTable<UUID>("realtors") {
     val firstName = varchar("first_name", 50)
     val lastName = varchar("last_name", 50)
     val middleName = varchar("middle_name", 50)
     val dealShare = double("deal_share").nullable()
 
-    init {
-        addIdColumn(user)
-    }
-
-    override val primaryKey = PrimaryKey(user)
+    override val id: Column<EntityID<UUID>> = reference("user_id", UserTable, ReferenceOption.CASCADE)
 }

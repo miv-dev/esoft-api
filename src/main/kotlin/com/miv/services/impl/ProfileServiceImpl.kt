@@ -82,17 +82,11 @@ class ProfileServiceImpl @Inject constructor(
 
         when (user.role) {
             Role.CLIENT -> {
-                val compositeID = CompositeID {
-                    it[ClientProfileTable.user] = user.id
-                }
-                ClientEntity[compositeID].toModel()
+                ClientEntity[user.id].toModel()
             }
 
             Role.REALTOR -> {
-                val compositeID = CompositeID {
-                    it[RealtorProfileTable.user] = user.id
-                }
-                RealtorEntity[compositeID].toModel()
+                RealtorEntity[user.id].toModel()
             }
 
             Role.ADMIN -> throw BadRequestException("Admin user does not have a profile")
@@ -151,10 +145,7 @@ class ProfileServiceImpl @Inject constructor(
 
         val user = userService.create(Role.REALTOR)
 
-        val id = CompositeID {
-            it[RealtorProfileTable.user] = user.id.value
-        }
-        RealtorEntity.new(id) {
+        RealtorEntity.new(user.id.value) {
             this.firstName = firstName
             this.lastName = lastName
             this.middleName = middleName
@@ -178,7 +169,7 @@ class ProfileServiceImpl @Inject constructor(
     private suspend fun checkClientExists(uuid: UUID, phone: String?, email: String?): Boolean =
         newSuspendedTransaction {
             val query = ClientProfileTable.selectAll()
-                .where { ClientProfileTable.user neq uuid }
+                .where { ClientProfileTable.id neq uuid }
 
             phone?.takeIf { it.isNotEmpty() }?.let {
                 query.andWhere { ClientProfileTable.phone eq phone }
@@ -201,10 +192,8 @@ class ProfileServiceImpl @Inject constructor(
         if (checkClientExists(phone, email)) throw BadRequestException("User is  exist")
 
         val user = userService.create(Role.CLIENT)
-        val id = CompositeID {
-            it[ClientProfileTable.user] = user.id.value
-        }
-        ClientEntity.new(id) {
+
+        ClientEntity.new(user.id.value) {
             this.firstName = firstName
             this.lastName = lastName
             this.middleName = middleName
@@ -227,10 +216,7 @@ class ProfileServiceImpl @Inject constructor(
     ): ClientEntity = newSuspendedTransaction {
         if (checkClientExists(uuid, phone, email)) throw BadRequestException("Another user is exist")
 
-        val id = CompositeID {
-            it[ClientProfileTable.user] = uuid
-        }
-        ClientEntity.findByIdAndUpdate(id) {
+        ClientEntity.findByIdAndUpdate(uuid) {
             it.firstName = firstName
             it.lastName = lastName
             it.middleName = middleName
@@ -254,10 +240,7 @@ class ProfileServiceImpl @Inject constructor(
         middleName: String,
         dealShare: Double?
     ): RealtorEntity = newSuspendedTransaction {
-        val id = CompositeID {
-            it[RealtorProfileTable.user] = uuid
-        }
-        RealtorEntity.findByIdAndUpdate(id) {
+        RealtorEntity.findByIdAndUpdate(uuid) {
             it.firstName = firstName
             it.lastName = lastName
             it.middleName = middleName
