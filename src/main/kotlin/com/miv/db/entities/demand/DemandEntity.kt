@@ -1,6 +1,7 @@
 package com.miv.db.entities.demand
 
 import com.miv.db.entities.ClientEntity
+import com.miv.db.entities.RealtorEntity
 import com.miv.db.entities.UserEntity
 import com.miv.db.tables.demand.DemandTable
 import org.jetbrains.exposed.dao.UUIDEntity
@@ -11,8 +12,8 @@ import java.util.UUID
 class DemandEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<DemandEntity>(DemandTable)
 
-    val client by UserEntity referencedOn DemandTable.client
-    val realtor by UserEntity referencedOn DemandTable.realtor
+    val client by ClientEntity referencedOn DemandTable.client
+    val realtor by RealtorEntity referencedOn DemandTable.realtor
     val realStateType by DemandTable.realStateType
     val minPrice by DemandTable.minPrice
     val maxPrice by DemandTable.maxPrice

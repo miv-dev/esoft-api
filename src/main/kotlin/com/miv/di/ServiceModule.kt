@@ -26,4 +26,7 @@ interface ServiceModule {
 
     @[ApplicationScope Binds]
     fun bindsRealStateService(impl: RealStateServiceImpl): RealStateService
+
+    @[ApplicationScope Binds]
+    fun bindsOfferService(impl: OfferServiceImpl): OfferService
 }

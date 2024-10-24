@@ -9,8 +9,8 @@ import org.jetbrains.exposed.sql.ReferenceOption
 
 
 object DemandTable : UUIDTable("demands") {
-    val client = reference("client_id", UserTable, onDelete = ReferenceOption.CASCADE)
-    val realtor = reference("realtor_id", UserTable, onDelete = ReferenceOption.CASCADE)
+    val client = reference("client_id", ClientProfileTable, onDelete = ReferenceOption.CASCADE)
+    val realtor = reference("realtor_id", RealtorProfileTable, onDelete = ReferenceOption.CASCADE)
     val realStateType = enumeration<RealStateType>("real_state_type")
 
     val minPrice = integer("min_price").nullable()

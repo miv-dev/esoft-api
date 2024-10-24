@@ -43,4 +43,6 @@ interface ProfileService {
     ): RealtorEntity
 
     suspend fun getProfileByUserID(id: UUID): Profile
+
+    suspend fun checkProfileExists(id: UUID, role: Role): Boolean
 }

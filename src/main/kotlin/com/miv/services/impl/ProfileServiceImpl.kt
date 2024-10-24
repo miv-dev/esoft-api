@@ -94,6 +94,14 @@ class ProfileServiceImpl @Inject constructor(
 
     }
 
+    override suspend fun checkProfileExists(id: UUID, role: Role): Boolean = newSuspendedTransaction {
+        when (role) {
+            Role.CLIENT -> ClientEntity.findById(id) != null
+            Role.REALTOR -> RealtorEntity.findById(id) != null
+            else -> false
+        }
+    }
+
     private suspend fun importUsers() {
         val filenames = importService.getImportedFiles()
 

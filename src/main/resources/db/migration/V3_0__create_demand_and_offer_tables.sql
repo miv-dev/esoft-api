@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS demands
 (
     id              uuid primary key,
-    client_id       uuid references users on delete cascade,
-    realtor_id      uuid references users on delete cascade,
+    client_id       uuid references clients on delete cascade,
+    realtor_id      uuid references realtors on delete cascade,
     real_state_type integer default 0 not null,
     min_price       integer,
     max_price       integer,
@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS demands
 CREATE TABLE IF NOT EXISTS offers
 (
     id            uuid primary key,
-    client_id     uuid references users on delete cascade,
-    realtor_id    uuid references users on delete cascade,
+    client_id     uuid references clients on delete cascade,
+    realtor_id    uuid references realtors on delete cascade,
     real_state_id uuid references real_states on delete cascade,
     price         integer not null
 );
