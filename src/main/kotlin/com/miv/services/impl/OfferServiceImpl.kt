@@ -25,7 +25,7 @@ class OfferServiceImpl @Inject constructor(
 
 
     override suspend fun getOffers(): List<Offer> {
-        newSuspendedTransaction {
+        return newSuspendedTransaction {
             OfferEntity.all().map {
                 Offer(
                     id = it.id.value,
@@ -36,7 +36,6 @@ class OfferServiceImpl @Inject constructor(
                 )
             }
         }
-        return emptyList()
     }
 
     override suspend fun getOffer(id: UUID): Offer? {
