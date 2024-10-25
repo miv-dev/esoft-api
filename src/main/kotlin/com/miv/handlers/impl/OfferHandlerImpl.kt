@@ -24,6 +24,11 @@ class OfferHandlerImpl @Inject constructor(
         return service.getOffers()
     }
 
+    override suspend fun get(userID: String): List<Offer> {
+        val uuid = UUID.fromString(userID)
+        return service.getOffers(uuid)
+    }
+
     override suspend fun getByID(id: String): Offer {
         val uuid = UUID.fromString(id)
         return service.getOffer(uuid) ?: throw NotFoundException("Offer with id:$id not found")

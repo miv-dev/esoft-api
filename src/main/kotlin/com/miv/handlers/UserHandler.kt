@@ -6,6 +6,8 @@ import com.miv.models.ClientProfile
 import com.miv.models.Profile
 import com.miv.models.RealtorProfile
 import com.miv.models.Role
+import com.miv.models.demand.Demand
+import com.miv.models.offer.Offer
 
 interface UserHandler {
 

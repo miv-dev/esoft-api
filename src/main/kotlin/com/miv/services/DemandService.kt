@@ -24,6 +24,7 @@ interface DemandService {
     ): Demand
 
     suspend fun get(): List<Demand>
+    suspend fun get(userID: UUID): List<Demand>
 
     suspend fun update(
         id: UUID,

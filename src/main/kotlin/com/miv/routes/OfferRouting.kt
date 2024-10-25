@@ -19,7 +19,13 @@ class OfferRouting @AssistedInject constructor(
     fun configureRouting() {
         route("/offers") {
             get {
-                handler.get().also {
+                val userID = call.parameters["user-id"]
+                val result = if (userID == null) {
+                    handler.get()
+                } else {
+                    handler.get(userID)
+                }
+                result.also {
                     call.respond(it)
                 }
             }

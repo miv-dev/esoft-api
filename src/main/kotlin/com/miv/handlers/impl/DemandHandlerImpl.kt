@@ -35,6 +35,12 @@ class DemandHandlerImpl @Inject constructor(
         }
     }
 
+    override suspend fun get(userID: String): List<Demand> {
+        val uuid = UUID.fromString(userID)
+
+        return service.get(uuid)
+    }
+
     override suspend fun get(): List<Demand> = service.get()
 
 

@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 class OfferServiceImpl @Inject constructor(
     private val realStateService: RealStateService,
-    private val profileService: ProfileService,
 ) : OfferService {
 
 
@@ -67,6 +66,20 @@ class OfferServiceImpl @Inject constructor(
             }
         }
         return getOffer(id.value)!!
+    }
+
+    override suspend fun getOffers(userId: UUID): List<Offer> = newSuspendedTransaction {
+        OfferEntity.find {
+            OfferTable.client eq userId or (OfferTable.realtor eq userId)
+        }.map {
+            Offer(
+                id = it.id.value,
+                client = it.client.toModel(),
+                realtor = it.realtor.toModel(),
+                realState = realStateService.getByID(it.realState.id.value),
+                price = it.price
+            )
+        }
     }
 
     override suspend fun delete(id: UUID) = newSuspendedTransaction {

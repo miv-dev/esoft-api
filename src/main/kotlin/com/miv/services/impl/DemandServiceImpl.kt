@@ -13,6 +13,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.statements.Statement
 import org.jetbrains.exposed.sql.statements.StatementType
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -78,6 +79,12 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         }
 
         return getByID(id.value)!!
+    }
+
+    override suspend fun get(userID: UUID): List<Demand> = newSuspendedTransaction {
+        DemandEntity.find {
+            DemandTable.client eq userID or (DemandTable.realtor eq userID)
+        }.map { it.toModel() }
     }
 
     override suspend fun get(): List<Demand> = newSuspendedTransaction {

@@ -7,9 +7,9 @@ import com.miv.models.ClientProfile
 import com.miv.models.Profile
 import com.miv.models.RealtorProfile
 import com.miv.models.Role
-import com.miv.services.ProfileService
-import com.miv.services.SearchService
-import com.miv.services.UserService
+import com.miv.models.demand.Demand
+import com.miv.models.offer.Offer
+import com.miv.services.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
 import javax.inject.Inject
