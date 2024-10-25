@@ -1,6 +1,6 @@
 package com.miv.routes
 
-import com.miv.dto.RealStateClassDTO
+import com.miv.dto.EstateClassDTO
 import com.miv.handlers.EstateHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -42,14 +42,14 @@ class EstateRouting @AssistedInject constructor(
                 }
             }
             post {
-                val data = call.receive<RealStateClassDTO>()
+                val data = call.receive<EstateClassDTO>()
                 handler.create(data).also {
                     call.respond(it)
                 }
             }
             put("/{id}") {
                 val id = call.parameters.getOrFail<String>("id")
-                val data = call.receive<RealStateClassDTO>()
+                val data = call.receive<EstateClassDTO>()
                 handler.update(id, data).also {
                     call.respond(it)
                 }

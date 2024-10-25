@@ -1,6 +1,5 @@
 package com.miv.models.estate
 
-import com.miv.models.EstateType
 import com.miv.models.district.District
 import com.miv.utils.UUIDSerializer
 import kotlinx.serialization.Serializable

@@ -3,9 +3,8 @@ package com.miv.services.impl
 import com.miv.db.entities.ClientEntity
 import com.miv.db.entities.RealtorEntity
 import com.miv.db.tables.ClientProfileTable
-import com.miv.db.tables.RealtorProfileTable
-import com.miv.models.Profile
-import com.miv.models.Role
+import com.miv.models.user.Profile
+import com.miv.models.user.Role
 import com.miv.services.ImportService
 import com.miv.services.ProfileService
 import com.miv.services.UserService
@@ -15,16 +14,11 @@ import io.ktor.server.plugins.BadRequestException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jetbrains.exposed.dao.id.CompositeID
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.andWhere
-import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.min
 
 class ProfileServiceImpl @Inject constructor(
     private val userService: UserService,

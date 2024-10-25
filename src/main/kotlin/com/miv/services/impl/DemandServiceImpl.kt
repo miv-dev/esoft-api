@@ -2,7 +2,7 @@ package com.miv.services.impl
 
 import com.miv.db.entities.demand.DemandEntity
 import com.miv.db.tables.demand.DemandTable
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import com.miv.models.demand.Demand
 import com.miv.services.DemandService
 import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException

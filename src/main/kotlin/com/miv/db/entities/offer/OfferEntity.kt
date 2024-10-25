@@ -16,6 +16,6 @@ class OfferEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 
     val client by ClientEntity referencedOn OfferTable.client
     val realtor by RealtorEntity referencedOn OfferTable.realtor
-    val realState by EstateEntity referencedOn OfferTable.realState
+    val estate by EstateEntity referencedOn OfferTable.realState
     val price by OfferTable.price
 }

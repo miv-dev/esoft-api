@@ -23,7 +23,7 @@ class OfferServiceImpl @Inject constructor(
                     id = it.id.value,
                     client = it.client.toModel(),
                     realtor = it.realtor.toModel(),
-                    estate = estateService.getByID(it.realState.id.value),
+                    estate = estateService.getByID(it.estate.id.value),
                     price = it.price
                 )
             }
@@ -37,7 +37,7 @@ class OfferServiceImpl @Inject constructor(
                     id = id,
                     client = it.client.toModel(),
                     realtor = it.realtor.toModel(),
-                    estate = estateService.getByID(it.realState.id.value),
+                    estate = estateService.getByID(it.estate.id.value),
                     price = it.price
                 )
             }
@@ -69,7 +69,7 @@ class OfferServiceImpl @Inject constructor(
                 id = it.id.value,
                 client = it.client.toModel(),
                 realtor = it.realtor.toModel(),
-                estate = estateService.getByID(it.realState.id.value),
+                estate = estateService.getByID(it.estate.id.value),
                 price = it.price
             )
         }

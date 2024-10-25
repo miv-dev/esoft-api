@@ -1,9 +1,8 @@
 package com.miv.db.entities
 
 import com.miv.db.tables.ClientProfileTable
-import com.miv.models.ClientProfile
+import com.miv.models.user.ClientProfile
 import org.jetbrains.exposed.dao.*
-import org.jetbrains.exposed.dao.id.CompositeID
 import org.jetbrains.exposed.dao.id.EntityID
 import java.util.UUID
 
@@ -18,7 +17,7 @@ class ClientEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     var email by ClientProfileTable.email
 
     fun toModel() = ClientProfile(
-        user = user.toModel(),
+        id = id.value,
         firstName = firstName,
         lastName = lastName,
         middleName = middleName,

@@ -1,9 +1,9 @@
 package com.miv.handlers.impl
 
-import com.miv.dto.RealStateClassDTO
-import com.miv.dto.RealStateSearchFiltersDTO
+import com.miv.dto.EstateClassDTO
+import com.miv.dto.EstateSearchFiltersDTO
 import com.miv.handlers.EstateHandler
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import com.miv.models.estate.EstateClass
 import com.miv.models.estate.SortVariant
 import com.miv.services.DistrictService
@@ -18,10 +18,10 @@ class EstateHandlerImpl @Inject constructor(
     private val districtService: DistrictService,
     private val estateService: EstateService,
 ) : EstateHandler {
-    override suspend fun getFilters(): RealStateSearchFiltersDTO = newSuspendedTransaction {
+    override suspend fun getFilters(): EstateSearchFiltersDTO = newSuspendedTransaction {
         val districts = districtService.getDistricts().map { it.toModel() }
 
-        RealStateSearchFiltersDTO(
+        EstateSearchFiltersDTO(
             districts = districts,
             sortVariants = SortVariant.entries,
             types = EstateType.entries
@@ -33,7 +33,7 @@ class EstateHandlerImpl @Inject constructor(
         type: String?,
         district: String?,
         sortBy: String?,
-        sordOrder: String?
+        sortOrder: String?
     ): List<EstateClass> {
         val estateType = type?.let {
             EstateType.valueOf(it)
@@ -41,7 +41,7 @@ class EstateHandlerImpl @Inject constructor(
         val sortByVariant = sortBy?.let {
             SortVariant.valueOf(it)
         }
-        val sortOrder = when (sordOrder?.toInt()) {
+        val sortOrderVariant = when (sortOrder?.toInt()) {
             -1, 0 -> SortOrder.DESC
             else -> SortOrder.ASC
         }
@@ -52,11 +52,11 @@ class EstateHandlerImpl @Inject constructor(
             estateType,
             districtID,
             sortByVariant,
-            sortOrder
+            sortOrderVariant
         )
     }
 
-    override suspend fun create(data: RealStateClassDTO): EstateClass {
+    override suspend fun create(data: EstateClassDTO): EstateClass {
         return estateService.create(
             type = data.type,
             latitude = data.latitude,
@@ -72,7 +72,7 @@ class EstateHandlerImpl @Inject constructor(
         )
     }
 
-    override suspend fun update(id: String, data: RealStateClassDTO): EstateClass {
+    override suspend fun update(id: String, data: EstateClassDTO): EstateClass {
         return estateService.update(
             id = UUID.fromString(id),
             type = data.type,

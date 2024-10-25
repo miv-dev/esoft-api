@@ -1,6 +1,6 @@
 package com.miv.db.tables.estate
 
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import org.jetbrains.exposed.dao.id.UUIDTable
 
 object EstateTable : UUIDTable("real_states") {

@@ -1,10 +1,10 @@
 package com.miv.dto
 
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RealStateClassDTO(
+data class EstateClassDTO(
     val type: EstateType,
     val latitude: Double,
     val longitude: Double,

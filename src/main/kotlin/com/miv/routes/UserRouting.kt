@@ -3,7 +3,7 @@ package com.miv.routes
 import com.miv.dto.ClientDTO
 import com.miv.dto.RealtorDTO
 import com.miv.handlers.UserHandler
-import com.miv.models.Role
+import com.miv.models.user.Role
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

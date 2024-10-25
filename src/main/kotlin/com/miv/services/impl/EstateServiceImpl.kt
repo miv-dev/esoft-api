@@ -5,7 +5,7 @@ import com.miv.db.entities.estate.HouseEntity
 import com.miv.db.entities.estate.LandEntity
 import com.miv.db.entities.estate.EstateEntity
 import com.miv.db.tables.estate.*
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import com.miv.models.estate.*
 import com.miv.services.DistrictService
 import com.miv.services.EstateService

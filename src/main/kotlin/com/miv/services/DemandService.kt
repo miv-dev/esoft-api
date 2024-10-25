@@ -1,6 +1,6 @@
 package com.miv.services
 
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import com.miv.models.demand.Demand
 import java.util.*
 

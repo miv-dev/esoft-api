@@ -2,7 +2,7 @@ package com.miv.db.tables.demand
 
 import com.miv.db.tables.ClientProfileTable
 import com.miv.db.tables.RealtorProfileTable
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ReferenceOption
 

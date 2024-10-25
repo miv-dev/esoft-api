@@ -14,7 +14,7 @@ class DemandEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 
     val client by ClientEntity referencedOn DemandTable.client
     val realtor by RealtorEntity referencedOn DemandTable.realtor
-    val realStateType by DemandTable.estateType
+    val estateType by DemandTable.estateType
     val minPrice by DemandTable.minPrice
     val maxPrice by DemandTable.maxPrice
     val minArea by DemandTable.minArea
@@ -31,7 +31,7 @@ class DemandEntity(id: EntityID<UUID>) : UUIDEntity(id) {
         id = id.value,
         client = client.toModel(),
         realtor = realtor.toModel(),
-        estateType = realStateType,
+        estateType = estateType,
         minPrice = minPrice,
         maxPrice = maxPrice,
         minArea = minArea,

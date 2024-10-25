@@ -1,6 +1,6 @@
 package com.miv.services
 
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import com.miv.models.estate.EstateClass
 import com.miv.models.estate.SortVariant
 import org.jetbrains.exposed.sql.SortOrder

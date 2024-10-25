@@ -1,7 +1,7 @@
 package com.miv.services.impl
 
 import com.miv.db.entities.UserEntity
-import com.miv.models.Role
+import com.miv.models.user.Role
 import com.miv.services.UserService
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*

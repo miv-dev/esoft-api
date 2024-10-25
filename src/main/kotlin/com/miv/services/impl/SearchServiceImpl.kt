@@ -4,15 +4,14 @@ import com.miv.db.entities.ClientEntity
 import com.miv.db.entities.RealtorEntity
 import com.miv.db.tables.ClientProfileTable
 import com.miv.db.tables.RealtorProfileTable
-import com.miv.models.Profile
-import com.miv.models.Role
+import com.miv.models.user.Profile
+import com.miv.models.user.Role
 import com.miv.services.SearchService
 import com.miv.utils.levenshtein
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import javax.inject.Inject
-import kotlin.math.min
 
 class SearchServiceImpl @Inject constructor() : SearchService {
     override suspend fun searchUsers(query: String?, role: Role): List<Profile> = newSuspendedTransaction {

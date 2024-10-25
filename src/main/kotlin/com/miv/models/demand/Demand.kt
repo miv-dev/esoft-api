@@ -1,8 +1,8 @@
 package com.miv.models.demand
 
-import com.miv.models.ClientProfile
-import com.miv.models.EstateType
-import com.miv.models.RealtorProfile
+import com.miv.models.user.ClientProfile
+import com.miv.models.estate.EstateType
+import com.miv.models.user.RealtorProfile
 import com.miv.utils.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.UUID

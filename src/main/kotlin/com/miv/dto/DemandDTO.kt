@@ -1,6 +1,6 @@
 package com.miv.dto
 
-import com.miv.models.EstateType
+import com.miv.models.estate.EstateType
 import com.miv.utils.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.UUID
