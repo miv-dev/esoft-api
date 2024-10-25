@@ -2,8 +2,7 @@ package com.miv.db.tables.demand
 
 import com.miv.db.tables.ClientProfileTable
 import com.miv.db.tables.RealtorProfileTable
-import com.miv.db.tables.UserTable
-import com.miv.models.RealStateType
+import com.miv.models.EstateType
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
@@ -11,7 +10,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 object DemandTable : UUIDTable("demands") {
     val client = reference("client_id", ClientProfileTable, onDelete = ReferenceOption.CASCADE)
     val realtor = reference("realtor_id", RealtorProfileTable, onDelete = ReferenceOption.CASCADE)
-    val realStateType = enumeration<RealStateType>("real_state_type")
+    val estateType = enumeration<EstateType>("real_state_type")
 
     val minPrice = integer("min_price").nullable()
     val maxPrice = integer("max_price").nullable()

@@ -2,7 +2,7 @@ package com.miv.plugins
 
 import com.miv.routes.DemandRouting
 import com.miv.routes.OfferRouting
-import com.miv.routes.RealStateRouting
+import com.miv.routes.EstateRouting
 import com.miv.routes.UserRouting
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -13,7 +13,7 @@ import io.ktor.server.routing.*
 
 class AppRouting @AssistedInject constructor(
     private val userRoutingFactory: UserRouting.Factory,
-    private val realStateRoutingFactory: RealStateRouting.Factory,
+    private val estateRoutingFactory: EstateRouting.Factory,
     private val offerRoutingFactory: OfferRouting.Factory,
     private val demandRoutingFactory: DemandRouting.Factory,
     @Assisted("application") private val application: Application,
@@ -21,7 +21,7 @@ class AppRouting @AssistedInject constructor(
     fun configureRouting() {
         application.routing {
             userRoutingFactory.create(this).invoke()
-            realStateRoutingFactory.create(this).configureRouting()
+            estateRoutingFactory.create(this).configureRouting()
             offerRoutingFactory.create(this).configureRouting()
             demandRoutingFactory.create(this).configureRouting()
         }

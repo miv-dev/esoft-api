@@ -1,6 +1,6 @@
 package com.miv.dto
 
-import com.miv.models.RealStateType
+import com.miv.models.EstateType
 import com.miv.utils.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.UUID
@@ -11,7 +11,7 @@ data class DemandDTO(
     val client: UUID,
     @Serializable(with = UUIDSerializer::class)
     val realtor: UUID,
-    val realStateType: RealStateType,
+    val estateType: EstateType,
     val minPrice: Int? = null,
     val maxPrice: Int? = null,
     val minArea: Int? = null,

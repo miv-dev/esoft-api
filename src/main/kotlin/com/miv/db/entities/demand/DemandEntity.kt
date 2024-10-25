@@ -2,7 +2,6 @@ package com.miv.db.entities.demand
 
 import com.miv.db.entities.ClientEntity
 import com.miv.db.entities.RealtorEntity
-import com.miv.db.entities.UserEntity
 import com.miv.db.tables.demand.DemandTable
 import com.miv.models.demand.Demand
 import org.jetbrains.exposed.dao.UUIDEntity
@@ -15,7 +14,7 @@ class DemandEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 
     val client by ClientEntity referencedOn DemandTable.client
     val realtor by RealtorEntity referencedOn DemandTable.realtor
-    val realStateType by DemandTable.realStateType
+    val realStateType by DemandTable.estateType
     val minPrice by DemandTable.minPrice
     val maxPrice by DemandTable.maxPrice
     val minArea by DemandTable.minArea
@@ -32,7 +31,7 @@ class DemandEntity(id: EntityID<UUID>) : UUIDEntity(id) {
         id = id.value,
         client = client.toModel(),
         realtor = realtor.toModel(),
-        realStateType = realStateType,
+        estateType = realStateType,
         minPrice = minPrice,
         maxPrice = maxPrice,
         minArea = minArea,

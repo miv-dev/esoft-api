@@ -1,10 +1,10 @@
-package com.miv.db.tables.real.state
+package com.miv.db.tables.estate
 
 import org.jetbrains.exposed.dao.id.CompositeIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
 object LandTable : CompositeIdTable("lands") {
-    val realState = reference("real_state", RealStateTable, ReferenceOption.CASCADE)
+    val realState = reference("real_state", EstateTable, ReferenceOption.CASCADE)
     val totalArea = double("total_area").nullable()
 
     init {

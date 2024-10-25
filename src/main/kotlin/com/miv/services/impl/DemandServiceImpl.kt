@@ -2,22 +2,14 @@ package com.miv.services.impl
 
 import com.miv.db.entities.demand.DemandEntity
 import com.miv.db.tables.demand.DemandTable
-import com.miv.db.tables.demand.DemandTable.client
-import com.miv.db.tables.demand.DemandTable.realtor
-import com.miv.models.RealStateType
+import com.miv.models.EstateType
 import com.miv.models.demand.Demand
-import com.miv.models.offer.Offer
 import com.miv.services.DemandService
 import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.statements.Statement
-import org.jetbrains.exposed.sql.statements.StatementType
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.util.*
 import javax.inject.Inject
@@ -26,7 +18,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
     override suspend fun create(
         clientID: UUID,
         realtorID: UUID,
-        realStateType: RealStateType,
+        estateType: EstateType,
         minPrice: Int?,
         maxPrice: Int?,
         minArea: Int?,
@@ -42,13 +34,13 @@ class DemandServiceImpl @Inject constructor() : DemandService {
             DemandTable.insertAndGetId {
                 it[client] = clientID
                 it[realtor] = realtorID
-                it[DemandTable.realStateType] = realStateType
+                it[DemandTable.estateType] = estateType
                 it[DemandTable.minPrice] = minPrice
                 it[DemandTable.maxPrice] = maxPrice
                 it[DemandTable.minArea] = minArea
                 it[DemandTable.maxArea] = maxArea
-                when (realStateType) {
-                    RealStateType.HOUSE -> {
+                when (estateType) {
+                    EstateType.HOUSE -> {
                         it[DemandTable.minRooms] = minRooms
                         it[DemandTable.maxRooms] = maxRooms
                         it[DemandTable.minFloors] = minFloors
@@ -57,7 +49,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
                         it[DemandTable.maxFloor] = null
                     }
 
-                    RealStateType.APARTMENT -> {
+                    EstateType.APARTMENT -> {
                         it[DemandTable.minRooms] = minRooms
                         it[DemandTable.maxRooms] = maxRooms
                         it[DemandTable.minFloor] = minFloor
@@ -66,7 +58,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
                         it[DemandTable.maxFloors] = null
                     }
 
-                    RealStateType.LAND -> {
+                    EstateType.LAND -> {
                         it[DemandTable.minRooms] = null
                         it[DemandTable.maxRooms] = null
                         it[DemandTable.minFloor] = null
@@ -95,7 +87,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         id: UUID,
         clientID: UUID,
         realtorID: UUID,
-        realStateType: RealStateType,
+        estateType: EstateType,
         minPrice: Int?,
         maxPrice: Int?,
         minArea: Int?,
@@ -111,13 +103,13 @@ class DemandServiceImpl @Inject constructor() : DemandService {
             DemandTable.update({ DemandTable.id eq id }) {
                 it[client] = clientID
                 it[realtor] = realtorID
-                it[DemandTable.realStateType] = realStateType
+                it[DemandTable.estateType] = estateType
                 it[DemandTable.minPrice] = minPrice
                 it[DemandTable.maxPrice] = maxPrice
                 it[DemandTable.minArea] = minArea
                 it[DemandTable.maxArea] = maxArea
-                when (realStateType) {
-                    RealStateType.HOUSE -> {
+                when (estateType) {
+                    EstateType.HOUSE -> {
                         it[DemandTable.minRooms] = minRooms
                         it[DemandTable.maxRooms] = maxRooms
                         it[DemandTable.minFloors] = minFloors
@@ -126,7 +118,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
                         it[DemandTable.maxFloor] = null
                     }
 
-                    RealStateType.APARTMENT -> {
+                    EstateType.APARTMENT -> {
                         it[DemandTable.minRooms] = minRooms
                         it[DemandTable.maxRooms] = maxRooms
                         it[DemandTable.minFloor] = minFloor
@@ -135,7 +127,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
                         it[DemandTable.maxFloors] = null
                     }
 
-                    RealStateType.LAND -> {
+                    EstateType.LAND -> {
                         it[DemandTable.minRooms] = null
                         it[DemandTable.maxRooms] = null
                         it[DemandTable.minFloor] = null

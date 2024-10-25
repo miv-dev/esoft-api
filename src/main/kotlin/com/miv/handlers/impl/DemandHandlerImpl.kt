@@ -6,7 +6,6 @@ import com.miv.dto.DemandDTO
 import com.miv.handlers.DemandHandler
 import com.miv.models.demand.Demand
 import com.miv.services.DemandService
-import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
 import org.jetbrains.exposed.dao.id.EntityID
 import java.util.*
@@ -20,7 +19,7 @@ class DemandHandlerImpl @Inject constructor(
             service.create(
                 client,
                 realtor,
-                realStateType,
+                estateType,
                 minPrice,
                 maxPrice,
                 minArea,
@@ -56,7 +55,7 @@ class DemandHandlerImpl @Inject constructor(
                 uuid,
                 client,
                 realtor,
-                realStateType,
+                estateType,
                 minPrice,
                 maxPrice,
                 minArea,

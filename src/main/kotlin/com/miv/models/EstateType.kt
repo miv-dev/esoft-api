@@ -1,6 +1,6 @@
 package com.miv.models
 
-enum class RealStateType{
+enum class EstateType{
     HOUSE, APARTMENT, LAND
 }
 

@@ -1,7 +1,7 @@
 package com.miv.routes
 
 import com.miv.dto.RealStateClassDTO
-import com.miv.handlers.RealStateHandler
+import com.miv.handlers.EstateHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -11,8 +11,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 
-class RealStateRouting @AssistedInject constructor(
-    private val handler: RealStateHandler,
+class EstateRouting @AssistedInject constructor(
+    private val handler: EstateHandler,
     @Assisted("route") route: Route,
 ) : Route by route {
 
@@ -68,6 +68,6 @@ class RealStateRouting @AssistedInject constructor(
     interface Factory {
         fun create(
             @Assisted("route") route: Route,
-        ): RealStateRouting
+        ): EstateRouting
     }
 }

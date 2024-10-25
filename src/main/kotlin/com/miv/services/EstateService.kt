@@ -1,24 +1,24 @@
 package com.miv.services
 
-import com.miv.models.RealStateType
-import com.miv.models.real.state.RealStateClass
-import com.miv.models.real.state.SortVariant
+import com.miv.models.EstateType
+import com.miv.models.estate.EstateClass
+import com.miv.models.estate.SortVariant
 import org.jetbrains.exposed.sql.SortOrder
 import java.util.*
 
-interface RealStateService {
+interface EstateService {
 
     suspend fun search(
         query: String?,
-        type: RealStateType?,
+        type: EstateType?,
         districtID: Int?,
         sortByVariant: SortVariant?,
         sortOrder: SortOrder = SortOrder.ASC
-    ): List<RealStateClass>
+    ): List<EstateClass>
 
 
     suspend fun create(
-        type: RealStateType,
+        type: EstateType,
         latitude: Double,
         longitude: Double,
         addressCity: String?,
@@ -29,11 +29,11 @@ interface RealStateService {
         totalFloors: Int? = null,
         totalRooms: Int? = null,
         floor: Int? = null
-    ): RealStateClass
+    ): EstateClass
 
     suspend fun update(
         id: UUID,
-        type: RealStateType,
+        type: EstateType,
         latitude: Double,
         longitude: Double,
         addressCity: String?,
@@ -44,8 +44,8 @@ interface RealStateService {
         totalFloors: Int?,
         totalRooms: Int?,
         floor: Int?
-    ): RealStateClass?
+    ): EstateClass?
 
     suspend fun delete(id: UUID)
-    suspend fun getByID(id: UUID): RealStateClass
+    suspend fun getByID(id: UUID): EstateClass
 }

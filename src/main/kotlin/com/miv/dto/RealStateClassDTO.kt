@@ -1,12 +1,11 @@
 package com.miv.dto
 
-import com.miv.models.RealStateType
-import com.miv.models.district.District
+import com.miv.models.EstateType
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class RealStateClassDTO(
-    val type: RealStateType,
+    val type: EstateType,
     val latitude: Double,
     val longitude: Double,
     val addressCity: String?,

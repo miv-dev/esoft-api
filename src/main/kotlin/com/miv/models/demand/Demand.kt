@@ -1,7 +1,7 @@
 package com.miv.models.demand
 
 import com.miv.models.ClientProfile
-import com.miv.models.RealStateType
+import com.miv.models.EstateType
 import com.miv.models.RealtorProfile
 import com.miv.utils.UUIDSerializer
 import kotlinx.serialization.Serializable
@@ -12,7 +12,7 @@ data class Demand(
     @Serializable(with = UUIDSerializer::class) val id: UUID,
     val client: ClientProfile,
     val realtor: RealtorProfile,
-    val realStateType: RealStateType,
+    val estateType: EstateType,
     val minPrice: Int?,
     val maxPrice: Int?,
     val minArea: Int?,

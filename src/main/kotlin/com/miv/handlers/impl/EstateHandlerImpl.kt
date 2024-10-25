@@ -2,29 +2,29 @@ package com.miv.handlers.impl
 
 import com.miv.dto.RealStateClassDTO
 import com.miv.dto.RealStateSearchFiltersDTO
-import com.miv.handlers.RealStateHandler
-import com.miv.models.RealStateType
-import com.miv.models.real.state.RealStateClass
-import com.miv.models.real.state.SortVariant
+import com.miv.handlers.EstateHandler
+import com.miv.models.EstateType
+import com.miv.models.estate.EstateClass
+import com.miv.models.estate.SortVariant
 import com.miv.services.DistrictService
-import com.miv.services.RealStateService
+import com.miv.services.EstateService
 import io.ktor.server.plugins.*
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
 import javax.inject.Inject
 
-class RealStateHandlerImpl @Inject constructor(
+class EstateHandlerImpl @Inject constructor(
     private val districtService: DistrictService,
-    private val realStateService: RealStateService,
-) : RealStateHandler {
+    private val estateService: EstateService,
+) : EstateHandler {
     override suspend fun getFilters(): RealStateSearchFiltersDTO = newSuspendedTransaction {
         val districts = districtService.getDistricts().map { it.toModel() }
 
         RealStateSearchFiltersDTO(
             districts = districts,
             sortVariants = SortVariant.entries,
-            types = RealStateType.entries
+            types = EstateType.entries
         )
     }
 
@@ -34,9 +34,9 @@ class RealStateHandlerImpl @Inject constructor(
         district: String?,
         sortBy: String?,
         sordOrder: String?
-    ): List<RealStateClass> {
-        val realStateType = type?.let {
-            RealStateType.valueOf(it)
+    ): List<EstateClass> {
+        val estateType = type?.let {
+            EstateType.valueOf(it)
         }
         val sortByVariant = sortBy?.let {
             SortVariant.valueOf(it)
@@ -47,17 +47,17 @@ class RealStateHandlerImpl @Inject constructor(
         }
         val districtID = district?.toInt()
 
-        return realStateService.search(
+        return estateService.search(
             query,
-            realStateType,
+            estateType,
             districtID,
             sortByVariant,
             sortOrder
         )
     }
 
-    override suspend fun create(data: RealStateClassDTO): RealStateClass {
-        return realStateService.create(
+    override suspend fun create(data: RealStateClassDTO): EstateClass {
+        return estateService.create(
             type = data.type,
             latitude = data.latitude,
             longitude = data.longitude,
@@ -72,8 +72,8 @@ class RealStateHandlerImpl @Inject constructor(
         )
     }
 
-    override suspend fun update(id: String, data: RealStateClassDTO): RealStateClass {
-        return realStateService.update(
+    override suspend fun update(id: String, data: RealStateClassDTO): EstateClass {
+        return estateService.update(
             id = UUID.fromString(id),
             type = data.type,
             latitude = data.latitude,
@@ -90,11 +90,11 @@ class RealStateHandlerImpl @Inject constructor(
     }
 
     override suspend fun delete(id: String) {
-        realStateService.delete(UUID.fromString(id))
+        estateService.delete(UUID.fromString(id))
     }
 
-    override suspend fun get(id: String): RealStateClass {
-        return realStateService.getByID(UUID.fromString(id))
+    override suspend fun get(id: String): EstateClass {
+        return estateService.getByID(UUID.fromString(id))
     }
 
 

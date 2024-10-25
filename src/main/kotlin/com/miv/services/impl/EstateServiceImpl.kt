@@ -1,14 +1,14 @@
 package com.miv.services.impl
 
-import com.miv.db.entities.real.state.ApartmentEntity
-import com.miv.db.entities.real.state.HouseEntity
-import com.miv.db.entities.real.state.LandEntity
-import com.miv.db.entities.real.state.RealStateEntity
-import com.miv.db.tables.real.state.*
-import com.miv.models.RealStateType
-import com.miv.models.real.state.*
+import com.miv.db.entities.estate.ApartmentEntity
+import com.miv.db.entities.estate.HouseEntity
+import com.miv.db.entities.estate.LandEntity
+import com.miv.db.entities.estate.EstateEntity
+import com.miv.db.tables.estate.*
+import com.miv.models.EstateType
+import com.miv.models.estate.*
 import com.miv.services.DistrictService
-import com.miv.services.RealStateService
+import com.miv.services.EstateService
 import com.miv.utils.levenshtein
 import io.ktor.server.plugins.*
 import org.jetbrains.exposed.dao.id.CompositeID
@@ -21,29 +21,29 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 import javax.inject.Inject
 
-class RealStateServiceImpl @Inject constructor(
+class EstateServiceImpl @Inject constructor(
     private val districtService: DistrictService,
-) : RealStateService {
+) : EstateService {
     override suspend fun search(
         query: String?,
-        type: RealStateType?,
+        type: EstateType?,
         districtID: Int?,
         sortByVariant: SortVariant?,
         sortOrder: SortOrder
-    ): List<RealStateClass> {
+    ): List<EstateClass> {
         val results = transaction {
-            val sql = RealStateTable
+            val sql = EstateTable
                 .join(
                     otherTable = RealStateDistrictTable,
                     joinType = JoinType.INNER,
-                    additionalConstraint = { RealStateTable.id eq RealStateDistrictTable.realState }
+                    additionalConstraint = { EstateTable.id eq RealStateDistrictTable.realState }
                 )
                 .leftJoin(HouseTable)
                 .leftJoin(LandTable)
                 .leftJoin(ApartmentTable)
                 .selectAll()
             type?.let {
-                sql.andWhere { RealStateTable.type eq type }
+                sql.andWhere { EstateTable.type eq type }
             }
             districtID?.let {
                 sql.andWhere { RealStateDistrictTable.district eq districtID }
@@ -51,19 +51,19 @@ class RealStateServiceImpl @Inject constructor(
             sortByVariant?.let {
                 when (sortByVariant) {
                     SortVariant.ADDRESS -> sql.orderBy(
-                        RealStateTable.addressStreet to sortOrder,
-                        RealStateTable.addressCity to sortOrder
+                        EstateTable.addressStreet to sortOrder,
+                        EstateTable.addressCity to sortOrder
                     )
 
-                    SortVariant.HOUSE -> sql.orderBy(RealStateTable.addressHouse to sortOrder)
-                    SortVariant.NUMBER -> sql.orderBy(RealStateTable.addressNumber to sortOrder)
+                    SortVariant.HOUSE -> sql.orderBy(EstateTable.addressHouse to sortOrder)
+                    SortVariant.NUMBER -> sql.orderBy(EstateTable.addressNumber to sortOrder)
                 }
             }
 
             sql.map {
-                val realState = RealStateEntity.wrapRow(it).toModel()
-                when (it[RealStateTable.type]) {
-                    RealStateType.HOUSE -> {
+                val realState = EstateEntity.wrapRow(it).toModel()
+                when (it[EstateTable.type]) {
+                    EstateType.HOUSE -> {
                         House(
                             realState,
                             it[HouseTable.totalArea],
@@ -72,7 +72,7 @@ class RealStateServiceImpl @Inject constructor(
                         )
                     }
 
-                    RealStateType.APARTMENT -> {
+                    EstateType.APARTMENT -> {
                         Apartment(
                             realState,
                             it[ApartmentTable.totalArea],
@@ -81,7 +81,7 @@ class RealStateServiceImpl @Inject constructor(
                         )
                     }
 
-                    RealStateType.LAND -> {
+                    EstateType.LAND -> {
                         Land(
                             realState,
                             it[LandTable.totalArea],
@@ -92,29 +92,29 @@ class RealStateServiceImpl @Inject constructor(
         }
         query?.let {
             return results.filter {
-                levenshtein(it.realState.addressCity, query) <= 3 ||
-                        levenshtein(it.realState.addressHouse, query) <= 3 ||
-                        levenshtein(it.realState.addressNumber, query) <= 1 ||
-                        levenshtein(it.realState.addressStreet, query) <= 1
+                levenshtein(it.estate.addressCity, query) <= 3 ||
+                        levenshtein(it.estate.addressHouse, query) <= 3 ||
+                        levenshtein(it.estate.addressNumber, query) <= 1 ||
+                        levenshtein(it.estate.addressStreet, query) <= 1
             }
         }
 
         return results
     }
 
-    override suspend fun getByID(id: UUID): RealStateClass {
+    override suspend fun getByID(id: UUID): EstateClass {
         return transaction {
-            RealStateEntity.findById(id)?.let {
+            EstateEntity.findById(id)?.let {
                 when(it.type){
-                    RealStateType.HOUSE -> HouseEntity.get(id).toModel()
-                    RealStateType.APARTMENT -> ApartmentEntity.get(id).toModel()
-                    RealStateType.LAND -> LandEntity.get(id).toModel()
+                    EstateType.HOUSE -> HouseEntity.get(id).toModel()
+                    EstateType.APARTMENT -> ApartmentEntity.get(id).toModel()
+                    EstateType.LAND -> LandEntity.get(id).toModel()
                 }
             } ?:  throw BadRequestException("RealState with id '$id' does not exist")
         }
     }
     override suspend fun create(
-        type: RealStateType,
+        type: EstateType,
         latitude: Double,
         longitude: Double,
         addressCity: String?,
@@ -125,10 +125,10 @@ class RealStateServiceImpl @Inject constructor(
         totalFloors: Int?,
         totalRooms: Int?,
         floor: Int?,
-    ): RealStateClass {
+    ): EstateClass {
         val districts = districtService.findDistrictByCoords(latitude, longitude)
-        val realStateEntity = newSuspendedTransaction {
-            RealStateEntity.new {
+        val estateEntity = newSuspendedTransaction {
+            EstateEntity.new {
                 this.type = type
                 this.latitude = latitude
                 this.longitude = longitude
@@ -141,7 +141,7 @@ class RealStateServiceImpl @Inject constructor(
         }
 
         return createOrUpdate(
-            realStateEntity.id.value,
+            estateEntity.id.value,
             totalArea,
             totalFloors,
             totalRooms,
@@ -154,7 +154,7 @@ class RealStateServiceImpl @Inject constructor(
 
     override suspend fun update(
         id: UUID,
-        type: RealStateType,
+        type: EstateType,
         latitude: Double,
         longitude: Double,
         addressCity: String?,
@@ -165,10 +165,10 @@ class RealStateServiceImpl @Inject constructor(
         totalFloors: Int?,
         totalRooms: Int?,
         floor: Int?,
-    ): RealStateClass? = newSuspendedTransaction {
+    ): EstateClass? = newSuspendedTransaction {
         val districts = districtService.findDistrictByCoords(latitude, longitude)
-        var oldType: RealStateType? = null
-        val realStateEntity = RealStateEntity.findByIdAndUpdate(id) {
+        var oldType: EstateType? = null
+        val estateEntity = EstateEntity.findByIdAndUpdate(id) {
             oldType = it.type
             it.type = type
 
@@ -181,7 +181,7 @@ class RealStateServiceImpl @Inject constructor(
             it.districts = districts
         }
 
-        realStateEntity?.let {
+        estateEntity?.let {
             createOrUpdate(
                 id,
                 totalArea,
@@ -196,7 +196,7 @@ class RealStateServiceImpl @Inject constructor(
 
     override suspend fun delete(id: UUID) {
        transaction {
-           RealStateEntity.findById(id)?.delete() ?: throw BadRequestException("RealState with id '$id' does not exist")
+           EstateEntity.findById(id)?.delete() ?: throw BadRequestException("RealState with id '$id' does not exist")
        }
     }
 
@@ -207,15 +207,15 @@ class RealStateServiceImpl @Inject constructor(
         totalFloors: Int?,
         totalRooms: Int?,
         floor: Int?,
-        type: RealStateType,
-        oldType: RealStateType?,
-    ): RealStateClass? {
+        type: EstateType,
+        oldType: EstateType?,
+    ): EstateClass? {
         oldType?.takeIf { it != type }?.let {
             deleteType(id, oldType)
         }
         return transaction {
             when (type) {
-                RealStateType.HOUSE -> {
+                EstateType.HOUSE -> {
                     val houseID = CompositeID {
                         it[HouseTable.realState] = id
                     }
@@ -239,7 +239,7 @@ class RealStateServiceImpl @Inject constructor(
 
                 }
 
-                RealStateType.APARTMENT -> {
+                EstateType.APARTMENT -> {
                     val apartmentID = CompositeID {
                         it[ApartmentTable.realState] = id
                     }
@@ -262,7 +262,7 @@ class RealStateServiceImpl @Inject constructor(
                     }
                 }
 
-                RealStateType.LAND -> {
+                EstateType.LAND -> {
                     val landID = CompositeID {
                         it[LandTable.realState] = id
                     }
@@ -284,24 +284,24 @@ class RealStateServiceImpl @Inject constructor(
         }
     }
 
-    private suspend fun deleteType(uuid: UUID, type: RealStateType) = newSuspendedTransaction {
+    private suspend fun deleteType(uuid: UUID, type: EstateType) = newSuspendedTransaction {
 
         when (type) {
-            RealStateType.HOUSE -> {
+            EstateType.HOUSE -> {
                 val houseID = CompositeID {
                     it[HouseTable.realState] = uuid
                 }
                 HouseEntity[houseID].delete()
             }
 
-            RealStateType.APARTMENT -> {
+            EstateType.APARTMENT -> {
                 val id = CompositeID {
                     it[ApartmentTable.realState] = uuid
                 }
                 ApartmentEntity[id].delete()
             }
 
-            RealStateType.LAND -> {
+            EstateType.LAND -> {
                 val id = CompositeID {
                     it[HouseTable.realState] = uuid
                 }

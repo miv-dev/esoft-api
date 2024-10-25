@@ -25,7 +25,7 @@ interface ServiceModule {
     fun bindsDistrictService(impl: DistrictServiceImpl): DistrictService
 
     @[ApplicationScope Binds]
-    fun bindsRealStateService(impl: RealStateServiceImpl): RealStateService
+    fun bindsEstateService(impl: EstateServiceImpl): EstateService
 
     @[ApplicationScope Binds]
     fun bindsOfferService(impl: OfferServiceImpl): OfferService

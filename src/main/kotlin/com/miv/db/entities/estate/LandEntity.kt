@@ -1,9 +1,7 @@
-package com.miv.db.entities.real.state
+package com.miv.db.entities.estate
 
-import com.miv.db.entities.real.state.HouseEntity.Companion
-import com.miv.db.tables.real.state.HouseTable
-import com.miv.db.tables.real.state.LandTable
-import com.miv.models.real.state.Land
+import com.miv.db.tables.estate.LandTable
+import com.miv.models.estate.Land
 import org.jetbrains.exposed.dao.CompositeEntity
 import org.jetbrains.exposed.dao.CompositeEntityClass
 import org.jetbrains.exposed.dao.id.CompositeID
@@ -20,11 +18,11 @@ class LandEntity(id: EntityID<CompositeID>) : CompositeEntity(id) {
         }
     }
 
-    val realState by RealStateEntity referencedOn LandTable.realState
+    val realState by EstateEntity referencedOn LandTable.realState
     var totalArea by LandTable.totalArea
 
     fun toModel() = Land(
-        realState = realState.toModel(),
+        estate = realState.toModel(),
         totalArea = totalArea,
     )
 }

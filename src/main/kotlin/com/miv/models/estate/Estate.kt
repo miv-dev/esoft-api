@@ -1,16 +1,16 @@
-package com.miv.models.real.state
+package com.miv.models.estate
 
-import com.miv.models.RealStateType
+import com.miv.models.EstateType
 import com.miv.models.district.District
 import com.miv.utils.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 
 @Serializable
-data class RealState(
+data class Estate(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
-    val type: RealStateType,
+    val type: EstateType,
     val latitude: Double,
     val longitude: Double,
     val addressCity: String?,
@@ -19,5 +19,6 @@ data class RealState(
     val addressNumber: String?,
     val districts: List<District>
 )
+
 
 

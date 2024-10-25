@@ -1,8 +1,7 @@
 package com.miv.services
 
-import com.miv.models.RealStateType
+import com.miv.models.EstateType
 import com.miv.models.demand.Demand
-import com.miv.models.offer.Offer
 import java.util.*
 
 interface DemandService {
@@ -10,7 +9,7 @@ interface DemandService {
     suspend fun create(
         clientID: UUID,
         realtorID: UUID,
-        realStateType: RealStateType,
+        estateType: EstateType,
         minPrice: Int?,
         maxPrice: Int?,
         minArea: Int?,
@@ -30,7 +29,7 @@ interface DemandService {
         id: UUID,
         clientID: UUID,
         realtorID: UUID,
-        realStateType: RealStateType,
+        estateType: EstateType,
         minPrice: Int?,
         maxPrice: Int?,
         minArea: Int?,
