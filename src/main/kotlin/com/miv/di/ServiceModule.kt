@@ -29,4 +29,7 @@ interface ServiceModule {
 
     @[ApplicationScope Binds]
     fun bindsOfferService(impl: OfferServiceImpl): OfferService
+
+    @[ApplicationScope Binds]
+    fun bindsDemandService(impl: DemandServiceImpl): DemandService
 }

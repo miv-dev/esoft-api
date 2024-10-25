@@ -1,9 +1,11 @@
 package com.miv.di
 
+import com.miv.handlers.DemandHandler
 import com.miv.handlers.OfferHandler
 import com.miv.handlers.RealStateHandler
 import com.miv.handlers.impl.RealStateHandlerImpl
 import com.miv.handlers.UserHandler
+import com.miv.handlers.impl.DemandHandlerImpl
 import com.miv.handlers.impl.OfferHandlerImpl
 import com.miv.handlers.impl.UserHandlerImpl
 import com.miv.services.OfferService
@@ -23,5 +25,8 @@ interface HandlersModule {
 
     @[ApplicationScope Binds]
     fun bindsOfferHandler(offerHandler: OfferHandlerImpl): OfferHandler
+
+    @[ApplicationScope Binds]
+    fun bindsDemandHandler(demandHandler: DemandHandlerImpl): DemandHandler
 
 }
