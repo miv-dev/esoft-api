@@ -4,6 +4,7 @@ import com.miv.db.entities.district.DistrictEntity
 import com.miv.db.tables.estate.RealStateDistrictTable
 import com.miv.db.tables.estate.EstateTable
 import com.miv.models.estate.Estate
+import com.miv.models.estate.EstateClass
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -21,9 +22,9 @@ class EstateEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     var addressNumber by EstateTable.addressNumber
     var districts by DistrictEntity via RealStateDistrictTable
 
-    fun toModel() = Estate(
+    fun toModel(estateClass: EstateClass) = Estate(
         id = id.value,
-        type = type,
+        data = estateClass,
         latitude = latitude,
         longitude = longitude,
         addressCity = addressCity,

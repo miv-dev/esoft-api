@@ -7,7 +7,6 @@ import java.util.*
 @Serializable
 @SerialName("HOUSE")
 data class House(
-    override val estate: Estate,
     val totalArea: Double?,
     val totalRooms: Int?,
     val totalFloors: Int?

@@ -22,7 +22,6 @@ class LandEntity(id: EntityID<CompositeID>) : CompositeEntity(id) {
     var totalArea by LandTable.totalArea
 
     fun toModel() = Land(
-        estate = realState.toModel(),
         totalArea = totalArea,
     )
 }

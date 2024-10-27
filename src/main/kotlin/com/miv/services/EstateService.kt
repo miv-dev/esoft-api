@@ -1,5 +1,6 @@
 package com.miv.services
 
+import com.miv.models.estate.Estate
 import com.miv.models.estate.EstateType
 import com.miv.models.estate.EstateClass
 import com.miv.models.estate.SortVariant
@@ -14,7 +15,7 @@ interface EstateService {
         districtID: Int?,
         sortByVariant: SortVariant?,
         sortOrder: SortOrder = SortOrder.ASC
-    ): List<EstateClass>
+    ): List<Estate>
 
 
     suspend fun create(
@@ -29,7 +30,7 @@ interface EstateService {
         totalFloors: Int? = null,
         totalRooms: Int? = null,
         floor: Int? = null
-    ): EstateClass
+    ): Estate
 
     suspend fun update(
         id: UUID,
@@ -44,8 +45,8 @@ interface EstateService {
         totalFloors: Int?,
         totalRooms: Int?,
         floor: Int?
-    ): EstateClass?
+    ): Estate?
 
     suspend fun delete(id: UUID)
-    suspend fun getByID(id: UUID): EstateClass
+    suspend fun getByID(id: UUID): Estate
 }

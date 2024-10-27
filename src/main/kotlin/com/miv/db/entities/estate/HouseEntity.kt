@@ -25,7 +25,6 @@ class HouseEntity(id: EntityID<CompositeID>) : CompositeEntity(id) {
     var totalArea by HouseTable.totalArea
 
     fun toModel() = House(
-        estate = realState.toModel(),
         totalArea = totalArea,
         totalRooms = totalRooms,
         totalFloors = totalFloors

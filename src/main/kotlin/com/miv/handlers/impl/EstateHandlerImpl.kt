@@ -3,6 +3,7 @@ package com.miv.handlers.impl
 import com.miv.dto.EstateClassDTO
 import com.miv.dto.EstateSearchFiltersDTO
 import com.miv.handlers.EstateHandler
+import com.miv.models.estate.Estate
 import com.miv.models.estate.EstateType
 import com.miv.models.estate.EstateClass
 import com.miv.models.estate.SortVariant
@@ -34,7 +35,7 @@ class EstateHandlerImpl @Inject constructor(
         district: String?,
         sortBy: String?,
         sortOrder: String?
-    ): List<EstateClass> {
+    ): List<Estate> {
         val estateType = type?.let {
             EstateType.valueOf(it)
         }
@@ -56,7 +57,7 @@ class EstateHandlerImpl @Inject constructor(
         )
     }
 
-    override suspend fun create(data: EstateClassDTO): EstateClass {
+    override suspend fun create(data: EstateClassDTO): Estate {
         return estateService.create(
             type = data.type,
             latitude = data.latitude,
@@ -72,7 +73,7 @@ class EstateHandlerImpl @Inject constructor(
         )
     }
 
-    override suspend fun update(id: String, data: EstateClassDTO): EstateClass {
+    override suspend fun update(id: String, data: EstateClassDTO): Estate {
         return estateService.update(
             id = UUID.fromString(id),
             type = data.type,
@@ -93,7 +94,7 @@ class EstateHandlerImpl @Inject constructor(
         estateService.delete(UUID.fromString(id))
     }
 
-    override suspend fun get(id: String): EstateClass {
+    override suspend fun get(id: String): Estate {
         return estateService.getByID(UUID.fromString(id))
     }
 

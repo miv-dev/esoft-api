@@ -30,7 +30,7 @@ class EstateServiceImpl @Inject constructor(
         districtID: Int?,
         sortByVariant: SortVariant?,
         sortOrder: SortOrder
-    ): List<EstateClass> {
+    ): List<Estate> {
         val results = transaction {
             val sql = EstateTable
                 .join(
@@ -61,11 +61,9 @@ class EstateServiceImpl @Inject constructor(
             }
 
             sql.map {
-                val realState = EstateEntity.wrapRow(it).toModel()
-                when (it[EstateTable.type]) {
+                val typeData =when (it[EstateTable.type]) {
                     EstateType.HOUSE -> {
                         House(
-                            realState,
                             it[HouseTable.totalArea],
                             it[HouseTable.totalRooms],
                             it[HouseTable.totalFloors],
@@ -74,7 +72,6 @@ class EstateServiceImpl @Inject constructor(
 
                     EstateType.APARTMENT -> {
                         Apartment(
-                            realState,
                             it[ApartmentTable.totalArea],
                             it[ApartmentTable.totalRooms],
                             it[ApartmentTable.floor]
@@ -83,33 +80,34 @@ class EstateServiceImpl @Inject constructor(
 
                     EstateType.LAND -> {
                         Land(
-                            realState,
                             it[LandTable.totalArea],
                         )
                     }
                 }
+               EstateEntity.wrapRow(it).toModel(typeData)
             }
         }
         query?.let {
             return results.filter {
-                levenshtein(it.estate.addressCity, query) <= 3 ||
-                        levenshtein(it.estate.addressHouse, query) <= 3 ||
-                        levenshtein(it.estate.addressNumber, query) <= 1 ||
-                        levenshtein(it.estate.addressStreet, query) <= 1
+                levenshtein(it.addressCity, query) <= 3 ||
+                        levenshtein(it.addressHouse, query) <= 3 ||
+                        levenshtein(it.addressNumber, query) <= 1 ||
+                        levenshtein(it.addressStreet, query) <= 1
             }
         }
 
         return results
     }
 
-    override suspend fun getByID(id: UUID): EstateClass {
+    override suspend fun getByID(id: UUID): Estate {
         return transaction {
             EstateEntity.findById(id)?.let {
-                when(it.type){
+                val typeData = when(it.type){
                     EstateType.HOUSE -> HouseEntity.get(id).toModel()
                     EstateType.APARTMENT -> ApartmentEntity.get(id).toModel()
                     EstateType.LAND -> LandEntity.get(id).toModel()
                 }
+                it.toModel(typeData)
             } ?:  throw BadRequestException("RealState with id '$id' does not exist")
         }
     }
@@ -125,7 +123,7 @@ class EstateServiceImpl @Inject constructor(
         totalFloors: Int?,
         totalRooms: Int?,
         floor: Int?,
-    ): EstateClass {
+    ): Estate {
         val districts = districtService.findDistrictByCoords(latitude, longitude)
         val estateEntity = newSuspendedTransaction {
             EstateEntity.new {
@@ -139,8 +137,7 @@ class EstateServiceImpl @Inject constructor(
                 this.districts = districts
             }
         }
-
-        return createOrUpdate(
+        val typeData = createOrUpdate(
             estateEntity.id.value,
             totalArea,
             totalFloors,
@@ -148,7 +145,11 @@ class EstateServiceImpl @Inject constructor(
             floor,
             type,
             null
-        )!!
+        ) ?: throw RuntimeException("Error creating new entity")
+
+        return newSuspendedTransaction {
+            estateEntity.toModel(typeData)
+        }
     }
 
 
@@ -165,7 +166,7 @@ class EstateServiceImpl @Inject constructor(
         totalFloors: Int?,
         totalRooms: Int?,
         floor: Int?,
-    ): EstateClass? = newSuspendedTransaction {
+    ): Estate? = newSuspendedTransaction {
         val districts = districtService.findDistrictByCoords(latitude, longitude)
         var oldType: EstateType? = null
         val estateEntity = EstateEntity.findByIdAndUpdate(id) {
@@ -181,7 +182,7 @@ class EstateServiceImpl @Inject constructor(
             it.districts = districts
         }
 
-        estateEntity?.let {
+        estateEntity?.let { estate ->
             createOrUpdate(
                 id,
                 totalArea,
@@ -190,7 +191,9 @@ class EstateServiceImpl @Inject constructor(
                 floor,
                 type,
                 oldType
-            )
+            )?.let {
+                estate.toModel(it)
+            }
         }
     }
 
@@ -213,7 +216,7 @@ class EstateServiceImpl @Inject constructor(
         oldType?.takeIf { it != type }?.let {
             deleteType(id, oldType)
         }
-        return transaction {
+        return newSuspendedTransaction {
             when (type) {
                 EstateType.HOUSE -> {
                     val houseID = CompositeID {
