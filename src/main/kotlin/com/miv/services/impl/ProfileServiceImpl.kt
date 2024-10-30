@@ -196,9 +196,13 @@ class ProfileServiceImpl @Inject constructor(
         val user = userService.create(Role.CLIENT)
 
         ClientEntity.new(user.id.value) {
-            this.firstName = firstName
-            this.lastName = lastName
-            this.middleName = middleName
+            if (firstName != null && lastName != null && middleName != null) {
+                this.firstName = user.id.value.toString().split("-").first()
+            } else {
+                this.firstName = firstName
+                this.lastName = lastName
+                this.middleName = middleName
+            }
             if (!phone.isNullOrEmpty()) {
                 this.phone = phone
             }
@@ -249,8 +253,6 @@ class ProfileServiceImpl @Inject constructor(
             it.dealShare = dealShare
         } ?: throw BadRequestException("User isn't exist")
     }
-
-
 
 
     companion object {

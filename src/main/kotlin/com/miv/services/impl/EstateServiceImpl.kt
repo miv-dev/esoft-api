@@ -35,7 +35,7 @@ class EstateServiceImpl @Inject constructor(
             val sql = EstateTable
                 .join(
                     otherTable = RealStateDistrictTable,
-                    joinType = JoinType.INNER,
+                    joinType = JoinType.LEFT,
                     additionalConstraint = { EstateTable.id eq RealStateDistrictTable.realState }
                 )
                 .leftJoin(HouseTable)
@@ -88,6 +88,8 @@ class EstateServiceImpl @Inject constructor(
             }
         }
         query?.let {
+
+            // TODO("Fix search")
             return results.filter {
                 levenshtein(it.addressCity, query) <= 3 ||
                         levenshtein(it.addressHouse, query) <= 3 ||

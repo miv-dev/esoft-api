@@ -28,6 +28,7 @@ class DemandEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 
 
     fun toModel() = Demand(
+        name = "Потребность#${id.value.toString().substring(0, 4)}",
         id = id.value,
         client = client.toModel(),
         realtor = realtor.toModel(),

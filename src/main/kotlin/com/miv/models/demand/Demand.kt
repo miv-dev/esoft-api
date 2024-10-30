@@ -9,6 +9,7 @@ import java.util.UUID
 
 @Serializable
 data class Demand(
+    val name: String,
     @Serializable(with = UUIDSerializer::class) val id: UUID,
     val client: ClientProfile,
     val realtor: RealtorProfile,

@@ -9,6 +9,7 @@ import java.util.UUID
 
 @Serializable
 data class Offer(
+    val name: String,
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
     val client: Profile,

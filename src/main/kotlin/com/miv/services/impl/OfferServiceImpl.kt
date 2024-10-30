@@ -21,6 +21,7 @@ class OfferServiceImpl @Inject constructor(
             OfferEntity.all().map {
                 Offer(
                     id = it.id.value,
+                    name = "Предложение#${it.id.value.toString().substring(0, 4)}",
                     client = it.client.toModel(),
                     realtor = it.realtor.toModel(),
                     estate = estateService.getByID(it.estate.id.value),
@@ -35,6 +36,7 @@ class OfferServiceImpl @Inject constructor(
             OfferEntity.findById(id)?.let {
                 Offer(
                     id = id,
+                    name = "Предложение#${id.toString().substring(0, 4)}",
                     client = it.client.toModel(),
                     realtor = it.realtor.toModel(),
                     estate = estateService.getByID(it.estate.id.value),
@@ -67,6 +69,7 @@ class OfferServiceImpl @Inject constructor(
         }.map {
             Offer(
                 id = it.id.value,
+                name = "Предложение#${it.id.value.toString().substring(0, 4)}",
                 client = it.client.toModel(),
                 realtor = it.realtor.toModel(),
                 estate = estateService.getByID(it.estate.id.value),
