@@ -1,8 +1,7 @@
 package com.miv.services
 
 import com.miv.db.entities.UserEntity
-import com.miv.models.Role
-import com.miv.models.User
+import com.miv.models.user.Role
 import java.util.*
 
 interface UserService {

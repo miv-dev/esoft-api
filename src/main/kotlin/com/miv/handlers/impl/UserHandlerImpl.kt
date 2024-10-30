@@ -3,10 +3,8 @@ package com.miv.handlers.impl
 import com.miv.dto.ClientDTO
 import com.miv.dto.RealtorDTO
 import com.miv.handlers.UserHandler
-import com.miv.models.ClientProfile
-import com.miv.models.Profile
-import com.miv.models.RealtorProfile
-import com.miv.models.Role
+import com.miv.models.user.Profile
+import com.miv.models.user.Role
 import com.miv.services.ProfileService
 import com.miv.services.SearchService
 import com.miv.services.UserService
@@ -24,7 +22,7 @@ class UserHandlerImpl @Inject constructor(
         role: Role
     ): List<Profile> = searchService.searchUsers(query, role)
 
-    override suspend fun createClient(data: ClientDTO): ClientProfile = newSuspendedTransaction {
+    override suspend fun createClient(data: ClientDTO): Profile = newSuspendedTransaction {
         profileService.createClient(
             firstName = data.firstName,
             lastName = data.lastName,
@@ -34,7 +32,7 @@ class UserHandlerImpl @Inject constructor(
         ).toModel()
     }
 
-    override suspend fun createRealtor(data: RealtorDTO): RealtorProfile = newSuspendedTransaction {
+    override suspend fun createRealtor(data: RealtorDTO): Profile = newSuspendedTransaction {
         profileService.createRealtor(
             firstName = data.firstName,
             lastName = data.lastName,
@@ -52,7 +50,7 @@ class UserHandlerImpl @Inject constructor(
         return profileService.getProfileByUserID(uuid)
     }
 
-    override suspend fun updateRealtor(data: RealtorDTO, uuid: String): RealtorProfile = newSuspendedTransaction {
+    override suspend fun updateRealtor(data: RealtorDTO, uuid: String): Profile = newSuspendedTransaction {
         val id = UUID.fromString(uuid)
         profileService.updateProfile(
             id,
@@ -63,7 +61,7 @@ class UserHandlerImpl @Inject constructor(
         ).toModel()
     }
 
-    override suspend fun updateClient(data: ClientDTO, uuid: String): ClientProfile = newSuspendedTransaction {
+    override suspend fun updateClient(data: ClientDTO, uuid: String): Profile = newSuspendedTransaction {
         val id = UUID.fromString(uuid)
         profileService.updateProfile(
             id,

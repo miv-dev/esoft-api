@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.miv"
-version = "2.0.0"
+version = "3.1.5"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.cors)
     implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.logback.classic)
     testImplementation(libs.ktor.server.test.host)

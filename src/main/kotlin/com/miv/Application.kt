@@ -19,8 +19,10 @@ fun Application.module() {
     install(ContentNegotiation) {
         json(Json {
             ignoreUnknownKeys = true
+            encodeDefaults = true
         })
     }
+    configureErrorHandler()
     cors()
     val app = DaggerApplicationComponent.create()
 

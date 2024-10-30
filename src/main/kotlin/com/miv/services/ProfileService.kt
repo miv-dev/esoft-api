@@ -2,10 +2,8 @@ package com.miv.services
 
 import com.miv.db.entities.ClientEntity
 import com.miv.db.entities.RealtorEntity
-import com.miv.models.Profile
-import com.miv.models.Role
-import com.miv.models.User
-import jdk.jfr.Percentage
+import com.miv.models.user.Profile
+import com.miv.models.user.Role
 import java.util.UUID
 
 interface ProfileService {
@@ -43,4 +41,6 @@ interface ProfileService {
     ): RealtorEntity
 
     suspend fun getProfileByUserID(id: UUID): Profile
+
+    suspend fun checkProfileExists(id: UUID, role: Role): Boolean
 }
