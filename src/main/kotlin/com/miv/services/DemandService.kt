@@ -2,6 +2,7 @@ package com.miv.services
 
 import com.miv.models.estate.EstateType
 import com.miv.models.demand.Demand
+import com.miv.models.demand.DemandClass
 import java.util.*
 
 interface DemandService {
@@ -20,10 +21,10 @@ interface DemandService {
         maxFloor: Int?,
         minFloors: Int?,
         maxFloors: Int?,
-    ): Demand
+    ): DemandClass
 
-    suspend fun get(): List<Demand>
-    suspend fun get(userID: UUID): List<Demand>
+    suspend fun get(): List<DemandClass>
+    suspend fun get(userID: UUID): List<DemandClass>
 
     suspend fun update(
         id: UUID,
@@ -40,8 +41,9 @@ interface DemandService {
         maxFloor: Int?,
         minFloors: Int?,
         maxFloors: Int?,
-    ): Demand
+    ): DemandClass
 
-    suspend fun getByID(id: UUID): Demand?
+    suspend fun getByID(id: UUID): DemandClass?
     suspend fun delete(id: UUID)
+    suspend fun getWithoutDeals(isSummary: Boolean): List<DemandClass>
 }

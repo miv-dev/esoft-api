@@ -1,16 +1,17 @@
 package com.miv.services.impl
 
 import com.miv.db.entities.demand.DemandEntity
+import com.miv.db.tables.deal.DealTable
 import com.miv.db.tables.demand.DemandTable
 import com.miv.models.estate.EstateType
 import com.miv.models.demand.Demand
+import com.miv.models.demand.DemandClass
 import com.miv.services.DemandService
 import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.update
 import java.util.*
 import javax.inject.Inject
 
@@ -29,7 +30,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         maxFloor: Int?,
         minFloors: Int?,
         maxFloors: Int?
-    ): Demand {
+    ): DemandClass {
         val id = newSuspendedTransaction {
             DemandTable.insertAndGetId {
                 it[client] = clientID
@@ -73,13 +74,13 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         return getByID(id.value)!!
     }
 
-    override suspend fun get(userID: UUID): List<Demand> = newSuspendedTransaction {
+    override suspend fun get(userID: UUID): List<DemandClass> = newSuspendedTransaction {
         DemandEntity.find {
             DemandTable.client eq userID or (DemandTable.realtor eq userID)
         }.map { it.toModel() }
     }
 
-    override suspend fun get(): List<Demand> = newSuspendedTransaction {
+    override suspend fun get(): List<DemandClass> = newSuspendedTransaction {
         DemandEntity.all().map(DemandEntity::toModel)
     }
 
@@ -98,7 +99,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         maxFloor: Int?,
         minFloors: Int?,
         maxFloors: Int?
-    ): Demand {
+    ): DemandClass {
         newSuspendedTransaction {
             DemandTable.update({ DemandTable.id eq id }) {
                 it[client] = clientID
@@ -141,7 +142,7 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         return getByID(id)!!
     }
 
-    override suspend fun getByID(id: UUID): Demand? = newSuspendedTransaction {
+    override suspend fun getByID(id: UUID): DemandClass? = newSuspendedTransaction {
         DemandEntity.findById(id)?.toModel()
     }
 
@@ -151,5 +152,15 @@ class DemandServiceImpl @Inject constructor() : DemandService {
             EntityID(id, DemandTable),
             entity = DemandEntity
         )
+    }
+
+    override suspend fun getWithoutDeals(isSummary: Boolean): List<DemandClass> = newSuspendedTransaction {
+        val query = DemandTable
+            .join(DealTable, JoinType.LEFT)
+            .selectAll()
+            .where { DealTable.demand.eq(null) }
+        DemandEntity.wrapRows(query).map {
+            it.toModel(isSummary)
+        }
     }
 }

@@ -1,9 +1,6 @@
 package com.miv.plugins
 
-import com.miv.routes.DemandRouting
-import com.miv.routes.OfferRouting
-import com.miv.routes.EstateRouting
-import com.miv.routes.UserRouting
+import com.miv.routes.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -16,6 +13,7 @@ class AppRouting @AssistedInject constructor(
     private val estateRoutingFactory: EstateRouting.Factory,
     private val offerRoutingFactory: OfferRouting.Factory,
     private val demandRoutingFactory: DemandRouting.Factory,
+    private val dealRoutingFactory: DealRouting.Factory,
     @Assisted("application") private val application: Application,
 ) {
     fun configureRouting() {
@@ -24,6 +22,7 @@ class AppRouting @AssistedInject constructor(
             estateRoutingFactory.create(this).configureRouting()
             offerRoutingFactory.create(this).configureRouting()
             demandRoutingFactory.create(this).configureRouting()
+            dealRoutingFactory.create(this).configureRouting()
         }
     }
 

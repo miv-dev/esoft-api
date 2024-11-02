@@ -1,16 +1,19 @@
 package com.miv.models.demand
 
-import com.miv.models.user.ClientProfile
 import com.miv.models.estate.EstateType
+import com.miv.models.user.ClientProfile
 import com.miv.models.user.RealtorProfile
 import com.miv.utils.UUIDSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import java.util.*
 
+@SerialName("DEMAND")
 @Serializable
 data class Demand(
-    val name: String,
-    @Serializable(with = UUIDSerializer::class) val id: UUID,
+    @Serializable(with = UUIDSerializer::class)
+    override val id: UUID,
+    override val name: String,
     val client: ClientProfile,
     val realtor: RealtorProfile,
     val estateType: EstateType,
@@ -24,4 +27,10 @@ data class Demand(
     val maxFloor: Int?,
     val minFloors: Int?,
     val maxFloors: Int?,
-)
+) : DemandClass
+
+@Serializable
+sealed interface DemandClass {
+    val id: UUID
+    val name: String
+}
