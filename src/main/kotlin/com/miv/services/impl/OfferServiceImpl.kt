@@ -1,8 +1,16 @@
 package com.miv.services.impl
 
+import com.miv.db.entities.demand.DemandEntity
 import com.miv.db.entities.offer.OfferEntity
+import com.miv.db.tables.deal.DealTable
+import com.miv.db.tables.estate.ApartmentTable
+import com.miv.db.tables.estate.EstateTable
+import com.miv.db.tables.estate.HouseTable
+import com.miv.db.tables.estate.LandTable
 import com.miv.db.tables.offer.OfferTable
 import com.miv.models.offer.Offer
+import com.miv.models.offer.OfferClass
+import com.miv.models.offer.OfferSummary
 import com.miv.services.OfferService
 import com.miv.services.EstateService
 import io.ktor.server.plugins.*
@@ -16,33 +24,28 @@ class OfferServiceImpl @Inject constructor(
 ) : OfferService {
 
 
-    override suspend fun getOffers(): List<Offer> {
+    override suspend fun getOffers(inSummary: Boolean): List<OfferClass> {
         return newSuspendedTransaction {
             OfferEntity.all().map {
-                Offer(
-                    id = it.id.value,
-                    name = "Предложение#${it.id.value.toString().substring(0, 4)}",
-                    client = it.client.toModel(),
-                    realtor = it.realtor.toModel(),
-                    estate = estateService.getByID(it.estate.id.value),
-                    price = it.price
-                )
+                it.toModel(inSummary)
             }
         }
     }
 
-    override suspend fun getOffer(id: UUID): Offer? {
+
+    override suspend fun getOffer(id: UUID): OfferClass? {
         return newSuspendedTransaction {
-            OfferEntity.findById(id)?.let {
-                Offer(
-                    id = id,
-                    name = "Предложение#${id.toString().substring(0, 4)}",
-                    client = it.client.toModel(),
-                    realtor = it.realtor.toModel(),
-                    estate = estateService.getByID(it.estate.id.value),
-                    price = it.price
-                )
-            }
+            OfferEntity.findById(id)?.toModel()
+        }
+    }
+
+    override suspend fun getOffersWithoutDeals(isSummary: Boolean) = newSuspendedTransaction {
+        val query = OfferTable
+            .join(DealTable, JoinType.LEFT)
+            .selectAll()
+            .where { DealTable.offer.eq(null) }
+        OfferEntity.wrapRows(query).map {
+            it.toModel(isSummary)
         }
     }
 
@@ -51,7 +54,7 @@ class OfferServiceImpl @Inject constructor(
         realtorID: UUID,
         realStateID: UUID,
         price: Int
-    ): Offer {
+    ): OfferClass {
         val id = newSuspendedTransaction {
             OfferTable.insertAndGetId {
                 it[client] = clientID
@@ -63,19 +66,10 @@ class OfferServiceImpl @Inject constructor(
         return getOffer(id.value)!!
     }
 
-    override suspend fun getOffers(userId: UUID): List<Offer> = newSuspendedTransaction {
+    override suspend fun getOffers(userId: UUID, inSummary: Boolean): List<OfferClass> = newSuspendedTransaction {
         OfferEntity.find {
             OfferTable.client eq userId or (OfferTable.realtor eq userId)
-        }.map {
-            Offer(
-                id = it.id.value,
-                name = "Предложение#${it.id.value.toString().substring(0, 4)}",
-                client = it.client.toModel(),
-                realtor = it.realtor.toModel(),
-                estate = estateService.getByID(it.estate.id.value),
-                price = it.price
-            )
-        }
+        }.map { it.toModel(inSummary) }
     }
 
     override suspend fun delete(id: UUID) = newSuspendedTransaction {
@@ -88,7 +82,7 @@ class OfferServiceImpl @Inject constructor(
         realtorID: UUID,
         realStateID: UUID,
         price: Int
-    ): Offer {
+    ): OfferClass {
         newSuspendedTransaction {
             OfferTable.update({ OfferTable.id eq id }) {
                 it[client] = clientID
@@ -101,4 +95,76 @@ class OfferServiceImpl @Inject constructor(
         return getOffer(id)!!
     }
 
+
+    private suspend fun OfferEntity.toModel(isSummary: Boolean = false): OfferClass {
+        val name = "Предложение#${id.toString().substring(0, 4)}"
+
+        return if (isSummary) {
+            OfferSummary(
+                id = id.value,
+                name = name,
+            )
+        } else {
+            Offer(
+                id = id.value,
+                name = name,
+                client = client.toModel(),
+                realtor = realtor.toModel(),
+                estate = estateService.getByID(estate.id.value),
+                price = price
+            )
+        }
+    }
+
+    override suspend fun getForDemand(isSummary: Boolean, demandID: UUID): List<OfferClass> =
+        newSuspendedTransaction {
+            val demand = DemandEntity[demandID]
+
+            val landQuery = LandTable
+                .select(LandTable.id, LandTable.realState)
+
+            val apartmentQuery = ApartmentTable
+                .select(ApartmentTable.id, ApartmentTable.realState)
+
+
+            val houseQuery = HouseTable
+                .select(HouseTable.id, HouseTable.realState)
+
+            with(demand) {
+                landQuery
+                    .applyFilter(minArea, maxArea, LandTable.totalArea)
+                    .alias("landSubquery")
+
+                houseQuery
+                    .applyFilter(minArea, minArea, HouseTable.totalArea)
+                    .applyFilter(minRooms, maxRooms, HouseTable.totalRooms)
+                    .applyFilter(minFloors, maxFloors, HouseTable.totalFloors)
+                    .alias("houseSubquery")
+
+                apartmentQuery
+                    .applyFilter(minArea, minArea, ApartmentTable.totalArea)
+                    .applyFilter(minRooms, maxRooms, ApartmentTable.totalRooms)
+                    .applyFilter(minFloor, maxFloor, ApartmentTable.floor)
+                    .alias("apartmentSubquery")
+            }
+
+            val query = OfferTable
+                .join(DealTable, JoinType.LEFT)
+                .innerJoin(EstateTable)
+                .selectAll()
+                .where {
+                    DealTable.offer.isNull() and
+                            EstateTable.type.eq(demand.estateType) and
+                            (exists(landQuery) or exists(houseQuery) or exists(apartmentQuery))
+                }
+                .applyFilter(demand.minPrice, demand.maxPrice, OfferTable.price)
+
+            OfferEntity.wrapRows(query).map { it.toModel(isSummary) }
+        }
+
+    private fun Query.applyFilter(min: Int?, max: Int?, column: Column<out Number?>): Query {
+        min?.let { andWhere { column.greaterEq(it.toDouble()) } }
+        max?.let { andWhere { column.lessEq(it.toDouble()) } }
+        return this
+    }
 }

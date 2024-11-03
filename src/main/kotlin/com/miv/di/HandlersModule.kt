@@ -1,13 +1,7 @@
 package com.miv.di
 
-import com.miv.handlers.DemandHandler
-import com.miv.handlers.OfferHandler
-import com.miv.handlers.EstateHandler
-import com.miv.handlers.impl.EstateHandlerImpl
-import com.miv.handlers.UserHandler
-import com.miv.handlers.impl.DemandHandlerImpl
-import com.miv.handlers.impl.OfferHandlerImpl
-import com.miv.handlers.impl.UserHandlerImpl
+import com.miv.handlers.*
+import com.miv.handlers.impl.*
 import dagger.Binds
 import dagger.Module
 import di.ApplicationScope
@@ -27,4 +21,7 @@ interface HandlersModule {
     @[ApplicationScope Binds]
     fun bindsDemandHandler(demandHandler: DemandHandlerImpl): DemandHandler
 
+
+    @[ApplicationScope Binds]
+    fun bindsDealHandler(dealHandler: DealHandlerImpl): DealHandler
 }

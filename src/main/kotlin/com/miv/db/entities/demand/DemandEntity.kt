@@ -4,6 +4,8 @@ import com.miv.db.entities.ClientEntity
 import com.miv.db.entities.RealtorEntity
 import com.miv.db.tables.demand.DemandTable
 import com.miv.models.demand.Demand
+import com.miv.models.demand.DemandClass
+import com.miv.models.demand.DemandSummary
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -27,21 +29,31 @@ class DemandEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     val maxFloors by DemandTable.maxFloors
 
 
-    fun toModel() = Demand(
-        name = "Потребность#${id.value.toString().substring(0, 4)}",
-        id = id.value,
-        client = client.toModel(),
-        realtor = realtor.toModel(),
-        estateType = estateType,
-        minPrice = minPrice,
-        maxPrice = maxPrice,
-        minArea = minArea,
-        maxArea = maxArea,
-        minRooms = minRooms,
-        maxRooms = maxRooms,
-        minFloor = minFloor,
-        maxFloor = maxFloor,
-        minFloors = minFloors,
-        maxFloors = maxFloors
-    )
+    fun toModel(isSummary: Boolean = false): DemandClass {
+        val name = "Потребность#${id.value.toString().substring(0, 4)}"
+        return if (isSummary) {
+            DemandSummary(
+                id = id.value,
+                name = name,
+            )
+        } else {
+            Demand(
+                id = id.value,
+                name = name,
+                client = client.toModel(),
+                realtor = realtor.toModel(),
+                estateType = estateType,
+                minPrice = minPrice,
+                maxPrice = maxPrice,
+                minArea = minArea,
+                maxArea = maxArea,
+                minRooms = minRooms,
+                maxRooms = maxRooms,
+                minFloor = minFloor,
+                maxFloor = maxFloor,
+                minFloors = minFloors,
+                maxFloors = maxFloors
+            )
+        }
+    }
 }

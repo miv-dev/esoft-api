@@ -1,20 +1,25 @@
 package com.miv.handlers
 
 import com.miv.dto.OfferDTO
-import com.miv.models.offer.Offer
+import com.miv.models.offer.OfferClass
 
 interface OfferHandler {
 
-    suspend fun create(offer: OfferDTO): Offer
+    suspend fun create(offer: OfferDTO): OfferClass
 
-    suspend fun get(): List<Offer>
-    suspend fun get(userID: String): List<Offer>
-    suspend fun getByID(id: String): Offer
+    suspend fun get(
+        userID: String?,
+        demandID: String?,
+        withoutDeal: Boolean = false,
+        inSummary: Boolean
+    ): List<OfferClass>
 
-    suspend fun update(offer: OfferDTO, id: String): Offer
+    suspend fun getByID(id: String): OfferClass
+
+    suspend fun update(offer: OfferDTO, id: String): OfferClass
 
     suspend fun delete(id: String)
-
+    suspend fun getWithoutDeals(): List<OfferClass>
 
 
 }

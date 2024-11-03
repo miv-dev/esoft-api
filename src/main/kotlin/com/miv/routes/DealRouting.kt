@@ -1,6 +1,9 @@
 package com.miv.routes
 
-import com.miv.dto.OfferDTO
+import com.miv.dto.DealDTO
+import com.miv.dto.DemandOffersType
+import com.miv.handlers.DealHandler
+import com.miv.handlers.DemandHandler
 import com.miv.handlers.OfferHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -11,46 +14,43 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 
-class OfferRouting @AssistedInject constructor(
-    private val handler: OfferHandler,
+class DealRouting @AssistedInject constructor(
+    private val handler: DealHandler,
+    private val offerHandler: OfferHandler,
+    private val demandHandler: DemandHandler,
     @Assisted("route") route: Route,
 ) : Route by route {
 
     fun configureRouting() {
-        route("/offers") {
+        route("/deals") {
             get {
-                val userID = call.request.queryParameters["user-id"]
-                val demandID = call.request.queryParameters["demand-id"]
-                val withoutDeals = call.request.queryParameters["without-deals"]
-                val inSummary = call.request.queryParameters["in-summary"]
-                val result = handler.get(userID, demandID, withoutDeals.toBoolean(), inSummary.toBoolean())
-                result.also {
+                handler.getAll().also {
                     call.respond(it)
                 }
             }
 
+            get("/filters") {
+                val inSummary = call.request.queryParameters["in-summary"].toBoolean()
 
-            get("/{id}") {
-                val id = call.parameters.getOrFail<String>("id")
-                handler.getByID(id).also {
-                    call.respond(it)
-                }
+                handler.getFilters(inSummary).also { call.respond(it) }
             }
 
             post {
-                val data = call.receive<OfferDTO>()
-                handler.create(data).also {
+                val deal = call.receive<DealDTO>()
+
+                handler.create(deal).also {
                     call.respond(it)
                 }
             }
 
             put("/{id}") {
                 val id = call.parameters.getOrFail<String>("id")
-                val data = call.receive<OfferDTO>()
-                handler.update(data, id).also {
+                val data = call.receive<DealDTO>()
+                handler.update(id, data).also {
                     call.respond(it)
                 }
             }
+
             delete("/{id}") {
                 val id = call.parameters.getOrFail<String>("id")
                 handler.delete(id).also {
@@ -64,6 +64,6 @@ class OfferRouting @AssistedInject constructor(
     interface Factory {
         fun create(
             @Assisted("route") route: Route,
-        ): OfferRouting
+        ): DealRouting
     }
 }

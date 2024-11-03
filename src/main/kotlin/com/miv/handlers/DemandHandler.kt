@@ -1,20 +1,18 @@
 package com.miv.handlers
 
 import com.miv.dto.DemandDTO
-import com.miv.dto.OfferDTO
 import com.miv.models.demand.Demand
-import com.miv.models.offer.Offer
+import com.miv.models.demand.DemandClass
 
 interface DemandHandler {
 
-    suspend fun create(offer: DemandDTO): Demand
+    suspend fun create(offer: DemandDTO): DemandClass
 
-    suspend fun get(): List<Demand>
-    suspend fun get(userID: String): List<Demand>
+    suspend fun get(userID: String?, offerID: String?, withoutDeals: Boolean, inSummary: Boolean): List<DemandClass>
 
-    suspend fun getByID(id: String): Demand
+    suspend fun getByID(id: String): DemandClass
 
-    suspend fun update(offer: DemandDTO, id: String): Demand
+    suspend fun update(offer: DemandDTO, id: String): DemandClass
 
     suspend fun delete(id: String)
 
