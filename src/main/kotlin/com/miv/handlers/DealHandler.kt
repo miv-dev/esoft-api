@@ -10,5 +10,5 @@ interface DealHandler {
     suspend fun getAll(): List<Deal>
     suspend fun update(dealID: String, dto: DealDTO): Deal
     suspend fun delete(id: String)
-    suspend fun getFilters(): DemandAndOffers
+    suspend fun getFilters(inSummary: Boolean): DemandAndOffers
 }

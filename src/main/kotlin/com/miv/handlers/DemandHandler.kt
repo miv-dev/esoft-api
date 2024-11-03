@@ -8,8 +8,7 @@ interface DemandHandler {
 
     suspend fun create(offer: DemandDTO): DemandClass
 
-    suspend fun get(): List<DemandClass>
-    suspend fun get(userID: String): List<DemandClass>
+    suspend fun get(userID: String?, offerID: String?, withoutDeals: Boolean, inSummary: Boolean): List<DemandClass>
 
     suspend fun getByID(id: String): DemandClass
 
@@ -17,5 +16,4 @@ interface DemandHandler {
 
     suspend fun delete(id: String)
 
-    suspend fun getWithoutDeals(): List<DemandClass>
 }

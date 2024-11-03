@@ -1,7 +1,12 @@
 package com.miv.services.impl
 
+import com.miv.db.entities.demand.DemandEntity
 import com.miv.db.entities.offer.OfferEntity
 import com.miv.db.tables.deal.DealTable
+import com.miv.db.tables.estate.ApartmentTable
+import com.miv.db.tables.estate.EstateTable
+import com.miv.db.tables.estate.HouseTable
+import com.miv.db.tables.estate.LandTable
 import com.miv.db.tables.offer.OfferTable
 import com.miv.models.offer.Offer
 import com.miv.models.offer.OfferClass
@@ -19,10 +24,10 @@ class OfferServiceImpl @Inject constructor(
 ) : OfferService {
 
 
-    override suspend fun getOffers(): List<OfferClass> {
+    override suspend fun getOffers(inSummary: Boolean): List<OfferClass> {
         return newSuspendedTransaction {
             OfferEntity.all().map {
-                it.toModel()
+                it.toModel(inSummary)
             }
         }
     }
@@ -61,10 +66,10 @@ class OfferServiceImpl @Inject constructor(
         return getOffer(id.value)!!
     }
 
-    override suspend fun getOffers(userId: UUID): List<OfferClass> = newSuspendedTransaction {
+    override suspend fun getOffers(userId: UUID, inSummary: Boolean): List<OfferClass> = newSuspendedTransaction {
         OfferEntity.find {
             OfferTable.client eq userId or (OfferTable.realtor eq userId)
-        }.map { it.toModel() }
+        }.map { it.toModel(inSummary) }
     }
 
     override suspend fun delete(id: UUID) = newSuspendedTransaction {
@@ -109,5 +114,57 @@ class OfferServiceImpl @Inject constructor(
                 price = price
             )
         }
+    }
+
+    override suspend fun getForDemand(isSummary: Boolean, demandID: UUID): List<OfferClass> =
+        newSuspendedTransaction {
+            val demand = DemandEntity[demandID]
+
+            val landQuery = LandTable
+                .select(LandTable.id, LandTable.realState)
+
+            val apartmentQuery = ApartmentTable
+                .select(ApartmentTable.id, ApartmentTable.realState)
+
+
+            val houseQuery = HouseTable
+                .select(HouseTable.id, HouseTable.realState)
+
+            with(demand) {
+                landQuery
+                    .applyFilter(minArea, maxArea, LandTable.totalArea)
+                    .alias("landSubquery")
+
+                houseQuery
+                    .applyFilter(minArea, minArea, HouseTable.totalArea)
+                    .applyFilter(minRooms, maxRooms, HouseTable.totalRooms)
+                    .applyFilter(minFloors, maxFloors, HouseTable.totalFloors)
+                    .alias("houseSubquery")
+
+                apartmentQuery
+                    .applyFilter(minArea, minArea, ApartmentTable.totalArea)
+                    .applyFilter(minRooms, maxRooms, ApartmentTable.totalRooms)
+                    .applyFilter(minFloor, maxFloor, ApartmentTable.floor)
+                    .alias("apartmentSubquery")
+            }
+
+            val query = OfferTable
+                .join(DealTable, JoinType.LEFT)
+                .innerJoin(EstateTable)
+                .selectAll()
+                .where {
+                    DealTable.offer.isNull() and
+                            EstateTable.type.eq(demand.estateType) and
+                            (exists(landQuery) or exists(houseQuery) or exists(apartmentQuery))
+                }
+                .applyFilter(demand.minPrice, demand.maxPrice, OfferTable.price)
+
+            OfferEntity.wrapRows(query).map { it.toModel(isSummary) }
+        }
+
+    private fun Query.applyFilter(min: Int?, max: Int?, column: Column<out Number?>): Query {
+        min?.let { andWhere { column.greaterEq(it.toDouble()) } }
+        max?.let { andWhere { column.lessEq(it.toDouble()) } }
+        return this
     }
 }

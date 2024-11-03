@@ -23,8 +23,10 @@ interface DemandService {
         maxFloors: Int?,
     ): DemandClass
 
-    suspend fun get(): List<DemandClass>
-    suspend fun get(userID: UUID): List<DemandClass>
+    suspend fun getAll(inSummary: Boolean, withoutDeals: Boolean): List<DemandClass>
+    suspend fun getByID(id: UUID): DemandClass?
+    suspend fun getByUserID(userID: UUID, inSummary: Boolean): List<DemandClass>
+    suspend fun getForOffer(offerID: UUID, inSummary: Boolean): List<DemandClass>
 
     suspend fun update(
         id: UUID,
@@ -43,7 +45,5 @@ interface DemandService {
         maxFloors: Int?,
     ): DemandClass
 
-    suspend fun getByID(id: UUID): DemandClass?
     suspend fun delete(id: UUID)
-    suspend fun getWithoutDeals(isSummary: Boolean): List<DemandClass>
 }

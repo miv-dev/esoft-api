@@ -21,16 +21,16 @@ class DemandRouting @AssistedInject constructor(
     fun configureRouting() {
         route("/demands") {
             get {
-                val userID = call.parameters["user-id"]
-                val result = if (userID == null) {
-                    handler.get()
-                } else {
-                    handler.get(userID)
-                }
-                result.also {
+                val userID = call.request.queryParameters["user-id"]
+                val offerID = call.request.queryParameters["offer-id"]
+                val inSummary = call.request.queryParameters["in-summary"]
+                val withoutDeals = call.request.queryParameters["without-deals"]
+
+                handler.get(userID, offerID, withoutDeals.toBoolean(), inSummary.toBoolean()).also {
                     call.respond(it)
                 }
             }
+
 
             get("/{id}") {
                 val id = call.parameters.getOrFail<String>("id")

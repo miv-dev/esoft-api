@@ -35,13 +35,26 @@ class DemandHandlerImpl @Inject constructor(
         }
     }
 
-    override suspend fun get(userID: String): List<DemandClass> {
-        val uuid = UUID.fromString(userID)
+    override suspend fun get(
+        userID: String?,
+        offerID: String?,
+        withoutDeals: Boolean,
+        inSummary: Boolean
+    ): List<DemandClass> {
+        userID?.let {
+            val id = UUID.fromString(userID)
 
-        return service.get(uuid)
+            return service.getByUserID(id, inSummary)
+        }
+
+        offerID?.let {
+            val id = UUID.fromString(offerID)
+
+            return service.getForOffer(id, inSummary)
+        }
+
+        return service.getAll(inSummary, withoutDeals)
     }
-
-    override suspend fun get(): List<DemandClass> = service.get()
 
 
     override suspend fun getByID(id: String): DemandClass {
@@ -76,7 +89,4 @@ class DemandHandlerImpl @Inject constructor(
         service.delete(uuid)
     }
 
-    override suspend fun getWithoutDeals(): List<DemandClass>{
-        return service.getWithoutDeals(false)
-    }
 }

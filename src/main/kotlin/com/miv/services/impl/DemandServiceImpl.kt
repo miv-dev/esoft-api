@@ -1,21 +1,35 @@
 package com.miv.services.impl
 
 import com.miv.db.entities.demand.DemandEntity
+import com.miv.db.entities.offer.OfferEntity
 import com.miv.db.tables.deal.DealTable
 import com.miv.db.tables.demand.DemandTable
+import com.miv.db.tables.estate.ApartmentTable
+import com.miv.db.tables.estate.EstateTable
+import com.miv.db.tables.estate.HouseTable
+import com.miv.db.tables.estate.LandTable
+import com.miv.db.tables.offer.OfferTable
 import com.miv.models.estate.EstateType
 import com.miv.models.demand.Demand
 import com.miv.models.demand.DemandClass
+import com.miv.models.estate.Apartment
+import com.miv.models.estate.House
+import com.miv.models.estate.Land
 import com.miv.services.DemandService
+import com.miv.services.EstateService
 import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.*
 import javax.inject.Inject
 
-class DemandServiceImpl @Inject constructor() : DemandService {
+class DemandServiceImpl @Inject constructor(
+    private val estateService: EstateService,
+) : DemandService {
     override suspend fun create(
         clientID: UUID,
         realtorID: UUID,
@@ -72,16 +86,6 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         }
 
         return getByID(id.value)!!
-    }
-
-    override suspend fun get(userID: UUID): List<DemandClass> = newSuspendedTransaction {
-        DemandEntity.find {
-            DemandTable.client eq userID or (DemandTable.realtor eq userID)
-        }.map { it.toModel() }
-    }
-
-    override suspend fun get(): List<DemandClass> = newSuspendedTransaction {
-        DemandEntity.all().map(DemandEntity::toModel)
     }
 
     override suspend fun update(
@@ -146,6 +150,65 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         DemandEntity.findById(id)?.toModel()
     }
 
+    override suspend fun getAll(inSummary: Boolean, withoutDeals: Boolean): List<DemandClass> =
+        newSuspendedTransaction {
+            val query = if (withoutDeals) {
+                DemandTable
+                    .join(DealTable, JoinType.LEFT)
+                    .selectAll()
+                    .where {
+                        DealTable.offer.isNull()
+                    }
+            } else {
+                DemandTable.selectAll()
+            }
+            DemandEntity.wrapRows(query).map { it.toModel(inSummary) }
+        }
+
+    override suspend fun getByUserID(userID: UUID, inSummary: Boolean): List<DemandClass> =
+        newSuspendedTransaction {
+            val query = DemandTable.selectAll()
+                .where { DemandTable.client eq userID or (DemandTable.realtor eq userID) }
+
+            DemandEntity.wrapRows(query).map { it.toModel(inSummary) }
+        }
+
+
+    override suspend fun getForOffer(offerID: UUID, inSummary: Boolean): List<DemandClass> =
+        newSuspendedTransaction {
+            val offer = OfferEntity[offerID]
+
+            val query = DemandTable
+                .join(DealTable, JoinType.LEFT)
+                .selectAll()
+                .where {
+                    DealTable.offer.isNull()
+                }
+                .andWhere { DemandTable.estateType.eq(offer.estate.type) }
+                .applyFilter(DemandTable.minPrice, DemandTable.maxPrice, offer.price)
+
+            estateService.getByID(offer.estate.id.value).also { estate ->
+                when (val data = estate.data) {
+                    is Apartment -> query
+                        .applyFilter(DemandTable.minArea, DemandTable.maxArea, data.totalArea)
+                        .applyFilter(DemandTable.minRooms, DemandTable.maxRooms, data.totalRooms)
+                        .applyFilter(DemandTable.minFloor, DemandTable.maxFloor, data.floor)
+
+                    is House -> query
+                        .applyFilter(DemandTable.minArea, DemandTable.maxArea, data.totalArea)
+                        .applyFilter(DemandTable.minRooms, DemandTable.maxRooms, data.totalRooms)
+                        .applyFilter(DemandTable.minFloors, DemandTable.maxFloor, data.totalFloors)
+
+                    is Land -> query
+                        .applyFilter(DemandTable.minArea, DemandTable.maxArea, data.totalArea)
+
+                }
+            }
+
+
+            DemandEntity.wrapRows(query).map { it.toModel(inSummary) }
+        }
+
 
     override suspend fun delete(id: UUID) = newSuspendedTransaction {
         DemandEntity.findById(id)?.delete() ?: throw EntityNotFoundException(
@@ -154,13 +217,10 @@ class DemandServiceImpl @Inject constructor() : DemandService {
         )
     }
 
-    override suspend fun getWithoutDeals(isSummary: Boolean): List<DemandClass> = newSuspendedTransaction {
-        val query = DemandTable
-            .join(DealTable, JoinType.LEFT)
-            .selectAll()
-            .where { DealTable.demand.eq(null) }
-        DemandEntity.wrapRows(query).map {
-            it.toModel(isSummary)
-        }
+
+    private fun Query.applyFilter(minCol: Column<out Number?>, maxCol: Column<out Number?>, value: Number?): Query {
+        value?.let { andWhere { minCol.lessEq(it.toInt()) } }
+        value?.let { andWhere { maxCol.greaterEq(it.toInt()) } }
+        return this
     }
 }

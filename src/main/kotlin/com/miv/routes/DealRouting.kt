@@ -30,14 +30,11 @@ class DealRouting @AssistedInject constructor(
             }
 
             get("/filters") {
-                val type = call.request.queryParameters.getOrFail<DemandOffersType>("type")
+                val inSummary = call.request.queryParameters["in-summary"].toBoolean()
 
-                when (type) {
-                    DemandOffersType.BOTH -> handler.getFilters().also { call.respond(it) }
-                    DemandOffersType.OFFER -> offerHandler.getWithoutDeals().also { call.respond(it) }
-                    DemandOffersType.DEMAND -> demandHandler.getWithoutDeals().also { call.respond(it) }
-                }
+                handler.getFilters(inSummary).also { call.respond(it) }
             }
+
             post {
                 val deal = call.receive<DealDTO>()
 

@@ -9,9 +9,10 @@ interface OfferService {
     suspend fun create(clientID: UUID, realtorID: UUID, realStateID: UUID, price: Int): OfferClass
 
     suspend fun getOffer(id: UUID): OfferClass?
-    suspend fun getOffers(): List<OfferClass>
-    suspend fun getOffers(userId: UUID): List<OfferClass>
+    suspend fun getOffers(inSummary: Boolean): List<OfferClass>
+    suspend fun getOffers(userId: UUID, inSummary: Boolean): List<OfferClass>
     suspend fun getOffersWithoutDeals(isSummary: Boolean): List<OfferClass>
+    suspend fun getForDemand(isSummary: Boolean, demandID: UUID): List<OfferClass>
 
     suspend fun update(id: UUID, clientID: UUID, realtorID: UUID, realStateID: UUID, price: Int): OfferClass
     suspend fun delete(id: UUID)

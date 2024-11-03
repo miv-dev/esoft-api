@@ -2,7 +2,6 @@ package com.miv.handlers.impl
 
 import com.miv.dto.OfferDTO
 import com.miv.handlers.OfferHandler
-import com.miv.models.offer.Offer
 import com.miv.models.offer.OfferClass
 import com.miv.services.OfferService
 import io.ktor.server.plugins.*
@@ -21,13 +20,25 @@ class OfferHandlerImpl @Inject constructor(
         )
     }
 
-    override suspend fun get(): List<OfferClass> {
-        return service.getOffers()
-    }
 
-    override suspend fun get(userID: String): List<OfferClass> {
-        val uuid = UUID.fromString(userID)
-        return service.getOffers(uuid)
+    override suspend fun get(userID: String?, demandID: String?, withoutDeal: Boolean, inSummary: Boolean): List<OfferClass> {
+        when {
+            userID != null -> {
+                val uuid = UUID.fromString(userID)
+                return service.getOffers(uuid, inSummary)
+            }
+            demandID != null -> {
+                val uuid = UUID.fromString(demandID)
+                return service.getForDemand(isSummary = inSummary, uuid)
+            }
+            else-> {
+                return if (withoutDeal){
+                    service.getOffersWithoutDeals(inSummary)
+                }else{
+                    service.getOffers(inSummary)
+                }
+            }
+        }
     }
 
     override suspend fun getByID(id: String): OfferClass {

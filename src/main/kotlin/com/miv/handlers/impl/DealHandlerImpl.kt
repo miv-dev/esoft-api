@@ -31,10 +31,10 @@ class DealHandlerImpl @Inject constructor(
         return dealService.update(uuid, dto.offerID, dto.demandID)
     }
 
-    override suspend fun getFilters(): DemandAndOffers {
+    override suspend fun getFilters(inSummary: Boolean): DemandAndOffers {
         return DemandAndOffers(
-            offersService.getOffersWithoutDeals(false),
-            demandService.getWithoutDeals(false)
+            offersService.getOffersWithoutDeals(inSummary),
+            demandService.getAll(inSummary = inSummary, withoutDeals = true)
         )
     }
 
