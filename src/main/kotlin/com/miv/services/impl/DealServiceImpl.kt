@@ -62,10 +62,9 @@ class DealServiceImpl @Inject constructor(
     override suspend fun update(dealID: UUID, offerID: UUID, demandID: UUID): Deal = newSuspendedTransaction {
         isExist(dealID, demandID, offerID)
 
-
-
         DealEntity.findByIdAndUpdate(dealID) {
-
+            it.demand = DemandEntity[demandID]
+            it.offer = OfferEntity[offerID]
         }?.toModel() ?: throw EntityNotFoundException(EntityID(dealID, DealTable), DealEntity)
 
     }
