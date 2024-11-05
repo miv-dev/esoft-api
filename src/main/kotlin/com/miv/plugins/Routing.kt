@@ -14,6 +14,7 @@ class AppRouting @AssistedInject constructor(
     private val offerRoutingFactory: OfferRouting.Factory,
     private val demandRoutingFactory: DemandRouting.Factory,
     private val dealRoutingFactory: DealRouting.Factory,
+    private val eventRoutingFactory: EventRouting.Factory,
     @Assisted("application") private val application: Application,
 ) {
     fun configureRouting() {
@@ -23,6 +24,7 @@ class AppRouting @AssistedInject constructor(
             offerRoutingFactory.create(this).configureRouting()
             demandRoutingFactory.create(this).configureRouting()
             dealRoutingFactory.create(this).configureRouting()
+            eventRoutingFactory.create(this).configureRouting()
         }
     }
 

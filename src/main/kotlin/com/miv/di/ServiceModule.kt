@@ -35,4 +35,7 @@ interface ServiceModule {
 
     @[ApplicationScope Binds]
     fun bindsDealService(impl: DealServiceImpl): DealService
+
+    @[ApplicationScope Binds]
+    fun bindsEventService(impl: EventServiceImpl): EventService
 }
