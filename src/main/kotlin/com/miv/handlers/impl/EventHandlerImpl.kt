@@ -13,7 +13,13 @@ import javax.inject.Inject
 class EventHandlerImpl @Inject constructor(
     private val eventService: EventService
 ) : EventHandler {
-    override suspend fun getAll(): List<Event> = eventService.getAll()
+    override suspend fun get(upcoming: Boolean): List<Event> {
+        return if (upcoming) {
+            eventService.getUpcomingEvents()
+        } else {
+            eventService.getAll()
+        }
+    }
 
     override suspend fun getOne(id: String): Event {
         val eventID = UUID.fromString(id)
@@ -56,5 +62,9 @@ class EventHandlerImpl @Inject constructor(
     override suspend fun delete(id: String) {
         val eventID = UUID.fromString(id)
         eventService.delete(eventID)
+    }
+
+    override suspend fun getGrouped(): Map<String, List<Event>> {
+        return eventService.getGroupByDate()
     }
 }

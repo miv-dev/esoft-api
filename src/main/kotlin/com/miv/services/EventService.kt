@@ -3,6 +3,7 @@ package com.miv.services
 import com.miv.models.event.Event
 import com.miv.models.event.EventType
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -27,4 +28,6 @@ interface EventService {
     ): Event
 
     suspend fun delete(id: UUID)
+    suspend fun getGroupByDate(): Map<String, List<Event>>
+    suspend fun getUpcomingEvents(): List<Event>
 }

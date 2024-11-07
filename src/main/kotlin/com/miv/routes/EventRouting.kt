@@ -18,9 +18,17 @@ class EventRouting @AssistedInject constructor(
     fun configureRouting() {
         route("/events") {
             get {
-                handler.getAll().also {
+                val upcoming = call.request.queryParameters["upcoming"].toBoolean()
+
+                handler.get(upcoming).also {
                     call.respond(it)
                 }
+            }
+            get("/grouped") {
+                handler.getGrouped().also {
+                    call.respond(it)
+                }
+
             }
 
             get("/{id}") {
