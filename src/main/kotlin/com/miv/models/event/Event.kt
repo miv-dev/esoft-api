@@ -9,13 +9,14 @@ import java.util.UUID
 
 @Serializable
 data class Event(
+    val type: String = "EVENT",
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
     val name: String,
     @Serializable(with = LocalDateTimeSerializer::class)
     @SerialName("startAt")
     val startAt: LocalDateTime,
-    val type: EventType,
+    val eventType: EventType,
     @Serializable(with = LocalDateTimeSerializer::class)
     @SerialName("endAt")
     val endAt: LocalDateTime?,

@@ -4,6 +4,7 @@ import com.miv.dto.EventDTO
 import com.miv.handlers.EventHandler
 import com.miv.models.event.Event
 import com.miv.services.EventService
+import io.ktor.server.plugins.*
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -32,6 +33,14 @@ class EventHandlerImpl @Inject constructor(
             LocalDateTime.of(dto.endDate, dto.endTime)
         } else null
 
+        if (startAt < LocalDateTime.now()) {
+            throw BadRequestException("Invalid start date")
+        }
+        endAt?.let {
+            if (startAt > endAt) {
+                throw BadRequestException("Invalid the end date should be after the start date")
+            }
+        }
 
         return eventService.create(
             dto.name,

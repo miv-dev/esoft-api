@@ -21,7 +21,7 @@ class EventEntity(id: EntityID<UUID>) : UUIDEntity(id) {
         id = id.value,
         name = name ?: "Событие#${id.value.toString().substring(0, 4)}",
         startAt = startAt,
-        type = type,
+        eventType = type,
         endAt = endAt,
         comment = comment
     )
