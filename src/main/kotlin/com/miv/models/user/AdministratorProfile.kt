@@ -10,4 +10,5 @@ import java.util.*
 data class AdministratorProfile(
     @Serializable(with = UUIDSerializer::class)
     override val id: UUID,
+    override val avatar: String?,
 ) : Profile()

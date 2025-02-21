@@ -21,6 +21,7 @@ class RealtorEntity(id: EntityID<UUID>) : UUIDEntity(id) {
         lastName = lastName,
         middleName = middleName,
         dealShare = dealShare,
+        avatar = user.avatar
     )
 
 }

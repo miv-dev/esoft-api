@@ -13,5 +13,6 @@ data class RealtorProfile(
     val firstName: String,
     val lastName: String,
     val middleName: String,
-    val dealShare: Double?
+    val dealShare: Double?,
+    override val avatar: String?
 ) : Profile()

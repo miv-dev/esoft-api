@@ -11,10 +11,12 @@ class UserEntity(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<UserEntity>(UserTable)
 
     var role by UserTable.role
+    var avatar by UserTable.avatar
 
     fun toModel() = User(
         id = id.value,
-        role = role
+        role = role,
+        avatar = avatar
     )
 
 }

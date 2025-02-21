@@ -61,7 +61,7 @@ class EstateServiceImpl @Inject constructor(
             }
 
             sql.map {
-                val typeData =when (it[EstateTable.type]) {
+                val typeData = when (it[EstateTable.type]) {
                     EstateType.HOUSE -> {
                         House(
                             it[HouseTable.totalArea],
@@ -84,17 +84,23 @@ class EstateServiceImpl @Inject constructor(
                         )
                     }
                 }
-               EstateEntity.wrapRow(it).toModel(typeData)
+                EstateEntity.wrapRow(it).toModel(typeData)
             }
         }
         query?.let {
+            val queryWords = query.split(" ").map { it.trim() }.filter { it.isNotEmpty() }
 
-            // TODO("Fix search")
-            return results.filter {
-                levenshtein(it.addressCity, query) <= 3 ||
-                        levenshtein(it.addressHouse, query) <= 3 ||
-                        levenshtein(it.addressNumber, query) <= 1 ||
-                        levenshtein(it.addressStreet, query) <= 1
+            return results.filter { estate ->
+                queryWords.any { word ->
+                    (estate.addressCity?.contains(word, ignoreCase = true) ?: false ||
+                            levenshtein(estate.addressCity, word) <= 3) ||
+                            (estate.addressStreet?.contains(word, ignoreCase = true) ?: false ||
+                                    levenshtein(estate.addressStreet, word) <= 3) ||
+                            (estate.addressHouse?.contains(word, ignoreCase = true) ?: false ||
+                                    levenshtein(estate.addressHouse, word) <= 1) ||
+                            (estate.addressNumber?.contains(word, ignoreCase = true) ?: false ||
+                                    levenshtein(estate.addressNumber, word) <= 1)
+                }
             }
         }
 
@@ -104,15 +110,16 @@ class EstateServiceImpl @Inject constructor(
     override suspend fun getByID(id: UUID): Estate {
         return transaction {
             EstateEntity.findById(id)?.let {
-                val typeData = when(it.type){
+                val typeData = when (it.type) {
                     EstateType.HOUSE -> HouseEntity.get(id).toModel()
                     EstateType.APARTMENT -> ApartmentEntity.get(id).toModel()
                     EstateType.LAND -> LandEntity.get(id).toModel()
                 }
                 it.toModel(typeData)
-            } ?:  throw BadRequestException("RealState with id '$id' does not exist")
+            } ?: throw BadRequestException("RealState with id '$id' does not exist")
         }
     }
+
     override suspend fun create(
         type: EstateType,
         latitude: Double,
@@ -200,9 +207,9 @@ class EstateServiceImpl @Inject constructor(
     }
 
     override suspend fun delete(id: UUID) {
-       transaction {
-           EstateEntity.findById(id)?.delete() ?: throw BadRequestException("RealState with id '$id' does not exist")
-       }
+        transaction {
+            EstateEntity.findById(id)?.delete() ?: throw BadRequestException("RealState with id '$id' does not exist")
+        }
     }
 
 
@@ -314,7 +321,6 @@ class EstateServiceImpl @Inject constructor(
             }
         }
     }
-
 
 
 }

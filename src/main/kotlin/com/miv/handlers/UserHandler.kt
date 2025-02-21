@@ -4,6 +4,7 @@ import com.miv.dto.ClientDTO
 import com.miv.dto.RealtorDTO
 import com.miv.models.user.Profile
 import com.miv.models.user.Role
+import io.ktor.http.content.*
 
 interface UserHandler {
 
@@ -20,4 +21,6 @@ interface UserHandler {
     suspend fun deleteUser(uuid: String)
 
     suspend fun getUserByID(id: String): Profile
+
+    suspend fun updateAvatar(id: String, data: MultiPartData): Profile
 }

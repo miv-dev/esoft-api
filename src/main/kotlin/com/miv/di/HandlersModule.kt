@@ -24,4 +24,7 @@ interface HandlersModule {
 
     @[ApplicationScope Binds]
     fun bindsDealHandler(dealHandler: DealHandlerImpl): DealHandler
+
+    @[ApplicationScope Binds]
+    fun bindsEventHandler(eventHandler: EventHandlerImpl): EventHandler
 }
