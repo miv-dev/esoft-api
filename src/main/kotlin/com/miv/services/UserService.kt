@@ -8,4 +8,6 @@ interface UserService {
     suspend fun create(role: Role): UserEntity
     suspend fun getByID(id: UUID): UserEntity
     suspend fun delete(id: UUID)
+
+    suspend fun updateAvatar(id: UUID, avatar: String): UserEntity?
 }

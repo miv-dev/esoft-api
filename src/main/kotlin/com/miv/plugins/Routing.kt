@@ -5,7 +5,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import io.ktor.server.application.*
+import io.ktor.server.http.content.*
 import io.ktor.server.routing.*
+import java.io.File
 
 
 class AppRouting @AssistedInject constructor(
@@ -25,6 +27,8 @@ class AppRouting @AssistedInject constructor(
             demandRoutingFactory.create(this).configureRouting()
             dealRoutingFactory.create(this).configureRouting()
             eventRoutingFactory.create(this).configureRouting()
+
+            staticFiles("/media", File("media"))
         }
     }
 

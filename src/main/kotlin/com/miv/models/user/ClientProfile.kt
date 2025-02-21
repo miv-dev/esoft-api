@@ -15,5 +15,6 @@ data class ClientProfile(
     val middleName: String?,
     val phone: String?,
     val email: String?,
+    override val avatar: String?,
 
     ) : Profile()

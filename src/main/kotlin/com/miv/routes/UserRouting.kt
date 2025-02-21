@@ -51,6 +51,14 @@ class UserRouting @AssistedInject constructor(
                 }
             }
 
+            post("/{id}/avatar") {
+                val id = call.parameters.getOrFail<String>("id")
+                val data = call.receiveMultipart()
+                handler.updateAvatar(id, data).also {
+                    call.respond(it)
+                }
+            }
+
             route("/client") {
                 post {
                     val data = call.receive<ClientDTO>()

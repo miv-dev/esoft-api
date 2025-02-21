@@ -22,7 +22,8 @@ class ClientEntity(id: EntityID<UUID>) : UUIDEntity(id) {
         lastName = lastName,
         middleName = middleName,
         phone = phone,
-        email = email
+        email = email,
+        avatar = user.avatar
     )
 
 }

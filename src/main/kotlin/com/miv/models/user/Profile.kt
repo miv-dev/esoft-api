@@ -6,4 +6,5 @@ import java.util.*
 @Serializable
 sealed class Profile {
     abstract val id: UUID
+    abstract val avatar: String?
 }
